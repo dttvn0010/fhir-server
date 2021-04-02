@@ -9,13 +9,13 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 public class Application {
     
-	@Autowired private FhirRestfulServlet fhirRestfulServlet;
-	
-	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args);
-	}
+    @Autowired private FhirRestfulServlet fhirRestfulServlet;
+    
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
 
-	@Bean
+    @Bean
     public ServletRegistrationBean<?> servletRegistrationBean() {
         var registration = new ServletRegistrationBean<>(fhirRestfulServlet, "/R4/*");
         registration.setName("FhirServlet");

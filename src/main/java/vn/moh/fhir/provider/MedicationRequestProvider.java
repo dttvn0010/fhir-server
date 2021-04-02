@@ -25,36 +25,36 @@ import vn.moh.fhir.utils.FhirUtils;
 @Component
 public class MedicationRequestProvider implements IResourceProvider {
 
-	@Autowired private MedicationRequestService medicationRequestService;
-	
-	@Override
-	public Class<? extends IBaseResource> getResourceType() {
-		return MedicationRequest.class;
-	}
+    @Autowired private MedicationRequestService medicationRequestService;
+    
+    @Override
+    public Class<? extends IBaseResource> getResourceType() {
+        return MedicationRequest.class;
+    }
 
-	@Read
+    @Read
     public Resource read(@IdParam IdType idType) {
-		var medicationRequestEntity = medicationRequestService.getById(idType.getIdPart());
-		if(medicationRequestEntity == null) {
-			FhirUtils.createOperationOutcome("No MedicationRequest with \"" + idType.getIdPart() + "\" found");
-		}
-		return medicationRequestEntity.toFhir();
-	}	
-	
-	
-	@Search
-	public List<MedicationRequest> search(
-			@OptionalParam(name ="patient") ReferenceParam patient,
-			@OptionalParam(name ="encounter") ReferenceParam encounter,
+        var medicationRequestEntity = medicationRequestService.getById(idType.getIdPart());
+        if(medicationRequestEntity == null) {
+            FhirUtils.createOperationOutcome("No MedicationRequest with \"" + idType.getIdPart() + "\" found");
+        }
+        return medicationRequestEntity.toFhir();
+    }    
+    
+    
+    @Search
+    public List<MedicationRequest> search(
+            @OptionalParam(name ="patient") ReferenceParam patient,
+            @OptionalParam(name ="encounter") ReferenceParam encounter,
             @Count Integer count, @Offset Integer offset) {
-		
-		
-		var lst = medicationRequestService.search(
-				patient != null? patient.getValue(): "", 
-				encounter != null? encounter.getValue(): "", 
-				offset, 
-				count);
-		
-		return DataUtils.transform(lst, MedicationRequestEntity::toFhir);
-	}
+        
+        
+        var lst = medicationRequestService.search(
+                patient != null? patient.getValue(): "", 
+                encounter != null? encounter.getValue(): "", 
+                offset, 
+                count);
+        
+        return DataUtils.transform(lst, MedicationRequestEntity::toFhir);
+    }
 }

@@ -15,35 +15,35 @@ import vn.moh.fhir.model.entity.AllergyIntoleranceEntity;
 @Service
 public class AllergyIntoleranceService {
 
-	@Autowired private MongoTemplate mongoTemplate;
-	
-	public AllergyIntoleranceEntity getById(String id) {
-		var critera =  Criteria.where("id").is(id).and("_active").is(true);
-		return mongoTemplate.findOne(new Query(critera), AllergyIntoleranceEntity.class);
-	}
-	
-	public List<AllergyIntoleranceEntity> search(String patientId, String encounterId, Integer offset, Integer count) {
-		var critera =  Criteria.where("_active").is(true);
-							
-		if(!StringUtils.isEmpty(patientId)) {
-			critera.and("patient.reference").is(ResourceType.Patient + "/" + patientId);
-		}
-		
-		if(!StringUtils.isEmpty(encounterId)) {
-			critera.and("encounter.reference").is(ResourceType.Encounter + "/" + encounterId);
-		}
-		
-		var query = new Query(critera);
-		
-		if(offset != null) {
-			query.skip(offset);
-		}
-		
-		if(count != null) {
-			query.limit(count);
-		}
-		
-		return mongoTemplate.find(query, AllergyIntoleranceEntity.class);							
-	}
-	
+    @Autowired private MongoTemplate mongoTemplate;
+    
+    public AllergyIntoleranceEntity getById(String id) {
+        var critera =  Criteria.where("id").is(id).and("_active").is(true);
+        return mongoTemplate.findOne(new Query(critera), AllergyIntoleranceEntity.class);
+    }
+    
+    public List<AllergyIntoleranceEntity> search(String patientId, String encounterId, Integer offset, Integer count) {
+        var critera =  Criteria.where("_active").is(true);
+                            
+        if(!StringUtils.isEmpty(patientId)) {
+            critera.and("patient.reference").is(ResourceType.Patient + "/" + patientId);
+        }
+        
+        if(!StringUtils.isEmpty(encounterId)) {
+            critera.and("encounter.reference").is(ResourceType.Encounter + "/" + encounterId);
+        }
+        
+        var query = new Query(critera);
+        
+        if(offset != null) {
+            query.skip(offset);
+        }
+        
+        if(count != null) {
+            query.limit(count);
+        }
+        
+        return mongoTemplate.find(query, AllergyIntoleranceEntity.class);                            
+    }
+    
 }

@@ -14,30 +14,30 @@ import vn.moh.fhir.model.entity.MedicationEntity;
 @Service
 public class MedicationService {
 
-	@Autowired private MongoTemplate mongoTemplate;
+    @Autowired private MongoTemplate mongoTemplate;
 
-	public MedicationEntity getById(String id) {
-		var critera =  Criteria.where("id").is(id).and("_active").is(true);
-		return mongoTemplate.findOne(new Query(critera), MedicationEntity.class);
-	}
-	
-	public List<MedicationEntity> search(String name, Integer offset, Integer count) {
-		var critera =  Criteria.where("_active").is(true);
-							
-		if(!StringUtils.isEmpty(name)) {
-			critera.and("code.text").regex(name);
-		}
-		
-		var query = new Query(critera);
-		
-		if(offset != null) {
-			query.skip(offset);
-		}
-		
-		if(count != null) {
-			query.limit(count);
-		}
-		
-		return mongoTemplate.find(query, MedicationEntity.class);
-	}
+    public MedicationEntity getById(String id) {
+        var critera =  Criteria.where("id").is(id).and("_active").is(true);
+        return mongoTemplate.findOne(new Query(critera), MedicationEntity.class);
+    }
+    
+    public List<MedicationEntity> search(String name, Integer offset, Integer count) {
+        var critera =  Criteria.where("_active").is(true);
+                            
+        if(!StringUtils.isEmpty(name)) {
+            critera.and("code.text").regex(name);
+        }
+        
+        var query = new Query(critera);
+        
+        if(offset != null) {
+            query.skip(offset);
+        }
+        
+        if(count != null) {
+            query.limit(count);
+        }
+        
+        return mongoTemplate.find(query, MedicationEntity.class);
+    }
 }

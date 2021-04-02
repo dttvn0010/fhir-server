@@ -15,30 +15,30 @@ import vn.moh.fhir.model.entity.EncounterEntity;
 @Service
 public class EncounterService {
 
-	@Autowired private MongoTemplate mongoTemplate;
+    @Autowired private MongoTemplate mongoTemplate;
 
-	public EncounterEntity getById(String id) {
-		var critera =  Criteria.where("id").is(id).and("_active").is(true);
-		return mongoTemplate.findOne(new Query(critera), EncounterEntity.class);
-	}
-	
-	public List<EncounterEntity> search(String patientId, Integer offset, Integer count) {
-		var critera =  Criteria.where("_active").is(true);
-							
-		if(!StringUtils.isEmpty(patientId)) {
-			critera.and("patient.reference").is(ResourceType.Patient + "/" + patientId);
-		}
-		
-		var query = new Query(critera);
-		
-		if(offset != null) {
-			query.skip(offset);
-		}
-		
-		if(count != null) {
-			query.limit(count);
-		}
-		
-		return mongoTemplate.find(query, EncounterEntity.class);							
-	}
+    public EncounterEntity getById(String id) {
+        var critera =  Criteria.where("id").is(id).and("_active").is(true);
+        return mongoTemplate.findOne(new Query(critera), EncounterEntity.class);
+    }
+    
+    public List<EncounterEntity> search(String patientId, Integer offset, Integer count) {
+        var critera =  Criteria.where("_active").is(true);
+                            
+        if(!StringUtils.isEmpty(patientId)) {
+            critera.and("patient.reference").is(ResourceType.Patient + "/" + patientId);
+        }
+        
+        var query = new Query(critera);
+        
+        if(offset != null) {
+            query.skip(offset);
+        }
+        
+        if(count != null) {
+            query.limit(count);
+        }
+        
+        return mongoTemplate.find(query, EncounterEntity.class);                            
+    }
 }

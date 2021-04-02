@@ -25,36 +25,36 @@ import vn.moh.fhir.utils.FhirUtils;
 @Component
 public class ConditionProvider implements IResourceProvider{
 
-	@Autowired private ConditionService conditionService;
+    @Autowired private ConditionService conditionService;
 
-	@Override
-	public Class<? extends IBaseResource> getResourceType() {
-		return Condition.class;
-	}
-	
-	@Read
+    @Override
+    public Class<? extends IBaseResource> getResourceType() {
+        return Condition.class;
+    }
+    
+    @Read
     public Resource read(@IdParam IdType idType) {
-		var conditionEntity = conditionService.getById(idType.getIdPart());
-		if(conditionEntity == null) {
-			FhirUtils.createOperationOutcome("No Condition with \"" + idType.getIdPart() + "\" found");
-		}
-		return conditionEntity.toFhir();
-	}	
-	
-	
-	@Search
-	public List<Condition> search(
-			@OptionalParam(name ="patient") ReferenceParam patient,
-			@OptionalParam(name ="encounter") ReferenceParam encounter,
+        var conditionEntity = conditionService.getById(idType.getIdPart());
+        if(conditionEntity == null) {
+            FhirUtils.createOperationOutcome("No Condition with \"" + idType.getIdPart() + "\" found");
+        }
+        return conditionEntity.toFhir();
+    }    
+    
+    
+    @Search
+    public List<Condition> search(
+            @OptionalParam(name ="patient") ReferenceParam patient,
+            @OptionalParam(name ="encounter") ReferenceParam encounter,
             @Count Integer count, @Offset Integer offset) {
-		
-		
-		var lst = conditionService.search(
-				patient != null? patient.getValue(): "", 
-				encounter != null? encounter.getValue(): "", 
-				offset, 
-				count);
-		
-		return DataUtils.transform(lst, ConditionEntity::toFhir);
-	}	
+        
+        
+        var lst = conditionService.search(
+                patient != null? patient.getValue(): "", 
+                encounter != null? encounter.getValue(): "", 
+                offset, 
+                count);
+        
+        return DataUtils.transform(lst, ConditionEntity::toFhir);
+    }    
 }

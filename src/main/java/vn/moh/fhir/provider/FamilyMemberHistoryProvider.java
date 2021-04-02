@@ -25,34 +25,34 @@ import vn.moh.fhir.utils.FhirUtils;
 @Component
 public class FamilyMemberHistoryProvider  implements IResourceProvider  {
 
-	@Autowired private FamilyMemberHistoryService familyMemberHistoryService;
+    @Autowired private FamilyMemberHistoryService familyMemberHistoryService;
 
-	@Override
-	public Class<? extends IBaseResource> getResourceType() {
-		return FamilyMemberHistory.class;
-	}
-	
-	@Read
+    @Override
+    public Class<? extends IBaseResource> getResourceType() {
+        return FamilyMemberHistory.class;
+    }
+    
+    @Read
     public Resource read(@IdParam IdType idType) {
-		var familiMemberHistoryEntity = familyMemberHistoryService.getById(idType.getIdPart());
-		if(familiMemberHistoryEntity == null) {
-			FhirUtils.createOperationOutcome("No FamilyMemberHistory with \"" + idType.getIdPart() + "\" found");
-		}
-		return familiMemberHistoryEntity.toFhir();
-	}	
-	
-	
-	@Search
-	public List<FamilyMemberHistory> search(
-			@OptionalParam(name ="patient") ReferenceParam patient,
+        var familiMemberHistoryEntity = familyMemberHistoryService.getById(idType.getIdPart());
+        if(familiMemberHistoryEntity == null) {
+            FhirUtils.createOperationOutcome("No FamilyMemberHistory with \"" + idType.getIdPart() + "\" found");
+        }
+        return familiMemberHistoryEntity.toFhir();
+    }    
+    
+    
+    @Search
+    public List<FamilyMemberHistory> search(
+            @OptionalParam(name ="patient") ReferenceParam patient,
             @Count Integer count, @Offset Integer offset) {
-		
-		
-		var lst = familyMemberHistoryService.search(
-				patient != null? patient.getValue(): "",  
-				offset, 
-				count);
-		
-		return DataUtils.transform(lst, FamilyMemberHistoryEntity::toFhir);
-	}
+        
+        
+        var lst = familyMemberHistoryService.search(
+                patient != null? patient.getValue(): "",  
+                offset, 
+                count);
+        
+        return DataUtils.transform(lst, FamilyMemberHistoryEntity::toFhir);
+    }
 }

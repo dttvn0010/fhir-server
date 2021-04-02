@@ -15,34 +15,34 @@ import vn.moh.fhir.model.entity.ObservationEntity;
 @Service
 public class ObservationService {
 
-	@Autowired private MongoTemplate mongoTemplate;
+    @Autowired private MongoTemplate mongoTemplate;
 
-	public ObservationEntity getById(String id) {
-		var critera =  Criteria.where("id").is(id).and("_active").is(true);
-		return mongoTemplate.findOne(new Query(critera), ObservationEntity.class);
-	}
-	
-	public List<ObservationEntity> search(String patientId, String encounterId, Integer offset, Integer count) {
-		var critera =  Criteria.where("_active").is(true);
-							
-		if(!StringUtils.isEmpty(patientId)) {
-			critera.and("patient.reference").is(ResourceType.Patient + "/" + patientId);
-		}
-		
-		if(!StringUtils.isEmpty(encounterId)) {
-			critera.and("encounter.reference").is(ResourceType.Encounter + "/" + encounterId);
-		}
-		
-		var query = new Query(critera);
-		
-		if(offset != null) {
-			query.skip(offset);
-		}
-		
-		if(count != null) {
-			query.limit(count);
-		}
-		
-		return mongoTemplate.find(query, ObservationEntity.class);							
-	}
+    public ObservationEntity getById(String id) {
+        var critera =  Criteria.where("id").is(id).and("_active").is(true);
+        return mongoTemplate.findOne(new Query(critera), ObservationEntity.class);
+    }
+    
+    public List<ObservationEntity> search(String patientId, String encounterId, Integer offset, Integer count) {
+        var critera =  Criteria.where("_active").is(true);
+                            
+        if(!StringUtils.isEmpty(patientId)) {
+            critera.and("patient.reference").is(ResourceType.Patient + "/" + patientId);
+        }
+        
+        if(!StringUtils.isEmpty(encounterId)) {
+            critera.and("encounter.reference").is(ResourceType.Encounter + "/" + encounterId);
+        }
+        
+        var query = new Query(critera);
+        
+        if(offset != null) {
+            query.skip(offset);
+        }
+        
+        if(count != null) {
+            query.limit(count);
+        }
+        
+        return mongoTemplate.find(query, ObservationEntity.class);                            
+    }
 }

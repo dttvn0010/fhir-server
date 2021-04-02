@@ -25,27 +25,27 @@ import vn.moh.fhir.utils.FhirUtils;
 @Component
 public class OrganizationProvider implements IResourceProvider {
 
-	@Autowired private OrganizationService organizationService;
-	
-	@Override
-	public Class<? extends IBaseResource> getResourceType() {
-		return Organization.class;
-	}
-	
-	@Read
+    @Autowired private OrganizationService organizationService;
+    
+    @Override
+    public Class<? extends IBaseResource> getResourceType() {
+        return Organization.class;
+    }
+    
+    @Read
     public Resource read(@IdParam IdType idType) {
-		var orgnanizationEntity = organizationService.getById(idType.getIdPart());
-		if(orgnanizationEntity == null) {
-			FhirUtils.createOperationOutcome("No Organization with \"" + idType.getIdPart() + "\" found");
-		}
-		return orgnanizationEntity.toFhir();
-	}	
-	
-	@Search
-	public List<Organization> search(@OptionalParam(name ="name") StringType name,                            
+        var orgnanizationEntity = organizationService.getById(idType.getIdPart());
+        if(orgnanizationEntity == null) {
+            FhirUtils.createOperationOutcome("No Organization with \"" + idType.getIdPart() + "\" found");
+        }
+        return orgnanizationEntity.toFhir();
+    }    
+    
+    @Search
+    public List<Organization> search(@OptionalParam(name ="name") StringType name,                            
             @Count Integer count, @Offset Integer offset) {
-		
-		var lst = organizationService.search(name != null? name.getValue(): "", offset, count);
-		return DataUtils.transform(lst, OrganizationEntity::toFhir);
-	}
+        
+        var lst = organizationService.search(name != null? name.getValue(): "", offset, count);
+        return DataUtils.transform(lst, OrganizationEntity::toFhir);
+    }
 }

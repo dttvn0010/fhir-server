@@ -25,36 +25,36 @@ import vn.moh.fhir.utils.FhirUtils;
 @Component
 public class ImmunizationProvider implements IResourceProvider {
 
-	@Autowired private ImmunizationService immunizationService;
-	
-	@Override
-	public Class<? extends IBaseResource> getResourceType() {
-		return Immunization.class;
-	}
+    @Autowired private ImmunizationService immunizationService;
+    
+    @Override
+    public Class<? extends IBaseResource> getResourceType() {
+        return Immunization.class;
+    }
 
-	@Read
+    @Read
     public Resource read(@IdParam IdType idType) {
-		var immunizationEntity = immunizationService.getById(idType.getIdPart());
-		if(immunizationEntity == null) {
-			FhirUtils.createOperationOutcome("No Immunization with \"" + idType.getIdPart() + "\" found");
-		}
-		return immunizationEntity.toFhir();
-	}	
-	
-	
-	@Search
-	public List<Immunization> search(
-			@OptionalParam(name ="patient") ReferenceParam patient,
-			@OptionalParam(name ="encounter") ReferenceParam encounter,
+        var immunizationEntity = immunizationService.getById(idType.getIdPart());
+        if(immunizationEntity == null) {
+            FhirUtils.createOperationOutcome("No Immunization with \"" + idType.getIdPart() + "\" found");
+        }
+        return immunizationEntity.toFhir();
+    }    
+    
+    
+    @Search
+    public List<Immunization> search(
+            @OptionalParam(name ="patient") ReferenceParam patient,
+            @OptionalParam(name ="encounter") ReferenceParam encounter,
             @Count Integer count, @Offset Integer offset) {
-		
-		
-		var lst = immunizationService.search(
-				patient != null? patient.getValue(): "", 
-				encounter != null? encounter.getValue(): "", 
-				offset, 
-				count);
-		
-		return DataUtils.transform(lst, ImmunizationEntity::toFhir);
-	}
+        
+        
+        var lst = immunizationService.search(
+                patient != null? patient.getValue(): "", 
+                encounter != null? encounter.getValue(): "", 
+                offset, 
+                count);
+        
+        return DataUtils.transform(lst, ImmunizationEntity::toFhir);
+    }
 }

@@ -25,36 +25,36 @@ import vn.moh.fhir.utils.FhirUtils;
 @Component
 public class ObservationProvider implements IResourceProvider {
 
-	@Autowired private ObservationService observationService;
-	
-	@Override
-	public Class<? extends IBaseResource> getResourceType() {
-		return Observation.class;
-	}
+    @Autowired private ObservationService observationService;
+    
+    @Override
+    public Class<? extends IBaseResource> getResourceType() {
+        return Observation.class;
+    }
 
-	@Read
+    @Read
     public Resource read(@IdParam IdType idType) {
-		var observationEntity = observationService.getById(idType.getIdPart());
-		if(observationEntity == null) {
-			FhirUtils.createOperationOutcome("No Observation with \"" + idType.getIdPart() + "\" found");
-		}
-		return observationEntity.toFhir();
-	}	
-	
-	
-	@Search
-	public List<Observation> search(
-			@OptionalParam(name ="patient") ReferenceParam patient,
-			@OptionalParam(name ="encounter") ReferenceParam encounter,
+        var observationEntity = observationService.getById(idType.getIdPart());
+        if(observationEntity == null) {
+            FhirUtils.createOperationOutcome("No Observation with \"" + idType.getIdPart() + "\" found");
+        }
+        return observationEntity.toFhir();
+    }    
+    
+    
+    @Search
+    public List<Observation> search(
+            @OptionalParam(name ="patient") ReferenceParam patient,
+            @OptionalParam(name ="encounter") ReferenceParam encounter,
             @Count Integer count, @Offset Integer offset) {
-		
-		
-		var lst = observationService.search(
-				patient != null? patient.getValue(): "", 
-				encounter != null? encounter.getValue(): "", 
-				offset, 
-				count);
-		
-		return DataUtils.transform(lst, ObservationEntity::toFhir);
-	}
+        
+        
+        var lst = observationService.search(
+                patient != null? patient.getValue(): "", 
+                encounter != null? encounter.getValue(): "", 
+                offset, 
+                count);
+        
+        return DataUtils.transform(lst, ObservationEntity::toFhir);
+    }
 }

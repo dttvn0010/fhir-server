@@ -32,48 +32,48 @@ import vn.moh.fhir.provider.SpecimenProvider;
 @Component
 public class FhirRestfulServlet extends RestfulServer {
 
-	private static final long serialVersionUID = 1L;
-	@Autowired private AllergyIntoleranceProvider allergyIntoleranceProvider;
-	@Autowired private ConditionProvider conditionProvider;
-	@Autowired private DiagnosticReportProvider diagnosticReportProvider;
-	@Autowired private EncounterProvider encounterProvider;
-	@Autowired private FamilyMemberHistoryProvider familyMemberHistoryProvider;
-	@Autowired private ImmunizationProvider immunizationProvider;
-	@Autowired private MedicationProvider medicationProvider;
-	@Autowired private MedicationRequestProvider medicationRequestProvider;
-	@Autowired private ObservationProvider observationProvider;
-	@Autowired private OrganizationProvider organizationProvider;
-	@Autowired private PatientProvider patientProvider;
-	@Autowired private PractitionerProvider practitionerProvider;
-	@Autowired private ProcedureProvider procedureProvider;
-	@Autowired private RelatedPersonProvider relatedPersonProvider;
-	@Autowired private ServiceRequestProvider serviceRequestProvider;
-	@Autowired private SpecimenProvider specimenProvider;
-	
-	
-	@Override
-	protected void initialize() throws ServletException {
-		setResourceProviders(List.of(
-			allergyIntoleranceProvider,
-			conditionProvider,
-			diagnosticReportProvider,			
-			encounterProvider,
-			familyMemberHistoryProvider,
-			immunizationProvider,
-			medicationProvider,
-			medicationRequestProvider,
-			observationProvider,
-			organizationProvider,
-			patientProvider,
-			practitionerProvider,
-			procedureProvider,
-			relatedPersonProvider,
-			serviceRequestProvider,
-			specimenProvider
-			
-		));
-		
-		var config = new CorsConfiguration();
+    private static final long serialVersionUID = 1L;
+    @Autowired private AllergyIntoleranceProvider allergyIntoleranceProvider;
+    @Autowired private ConditionProvider conditionProvider;
+    @Autowired private DiagnosticReportProvider diagnosticReportProvider;
+    @Autowired private EncounterProvider encounterProvider;
+    @Autowired private FamilyMemberHistoryProvider familyMemberHistoryProvider;
+    @Autowired private ImmunizationProvider immunizationProvider;
+    @Autowired private MedicationProvider medicationProvider;
+    @Autowired private MedicationRequestProvider medicationRequestProvider;
+    @Autowired private ObservationProvider observationProvider;
+    @Autowired private OrganizationProvider organizationProvider;
+    @Autowired private PatientProvider patientProvider;
+    @Autowired private PractitionerProvider practitionerProvider;
+    @Autowired private ProcedureProvider procedureProvider;
+    @Autowired private RelatedPersonProvider relatedPersonProvider;
+    @Autowired private ServiceRequestProvider serviceRequestProvider;
+    @Autowired private SpecimenProvider specimenProvider;
+    
+    
+    @Override
+    protected void initialize() throws ServletException {
+        setResourceProviders(List.of(
+            allergyIntoleranceProvider,
+            conditionProvider,
+            diagnosticReportProvider,            
+            encounterProvider,
+            familyMemberHistoryProvider,
+            immunizationProvider,
+            medicationProvider,
+            medicationRequestProvider,
+            observationProvider,
+            organizationProvider,
+            patientProvider,
+            practitionerProvider,
+            procedureProvider,
+            relatedPersonProvider,
+            serviceRequestProvider,
+            specimenProvider
+            
+        ));
+        
+        var config = new CorsConfiguration();
         var corsInterceptor = new CorsInterceptor(config);
         config.addAllowedHeader("Accept");
         config.addAllowedHeader("Content-Type");
@@ -84,5 +84,5 @@ public class FhirRestfulServlet extends RestfulServer {
         registerInterceptor(corsInterceptor);
         registerInterceptor(new ResponseHighlighterInterceptor());
         setDefaultPrettyPrint(true);
-	}
+    }
 }

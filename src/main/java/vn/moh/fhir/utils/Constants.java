@@ -3,7 +3,7 @@ package vn.moh.fhir.utils;
 public class Constants {
 
     public static interface IdentifierSystem{
-    	final public static String MA_BENH_NHAN = "https://www.moh.gov.vn/identifier/MaBenhNhan";
+        final public static String MA_BENH_NHAN = "https://www.moh.gov.vn/identifier/MaBenhNhan";
         final public static String DINH_DANH_YTE = "https://www.moh.gov.vn/identifier/DinhDanhBenhNhan";
         final public static String CMND = "https://www.moh.gov.vn/identifier/CMND";
         final public static String SO_BENH_AN = "https://www.moh.gov.vn/identifier/SoBenhAn";
@@ -17,7 +17,7 @@ public class Constants {
     }
    
     public static interface ExtensionURL {
-    	// Patient    	
+        // Patient        
         final public static String PATIENT_ETHNIC = "https://www.moh.gov.vn/extension/Patient/Ethnic";
         final public static String PATIENT_RELIGION = "https://www.moh.gov.vn/extension/Patient/Relgion";
         final public static String PATIENT_EDUCATION = "https://www.moh.gov.vn/extension/Patient/Education";

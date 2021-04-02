@@ -25,28 +25,28 @@ import vn.moh.fhir.utils.FhirUtils;
 @Component
 public class PatientProvider implements IResourceProvider{
 
-	@Autowired private PatientService patientService;
-	
-	@Override
-	public Class<? extends IBaseResource> getResourceType() {
-		return Patient.class;
-	}
-	
-	@Read
+    @Autowired private PatientService patientService;
+    
+    @Override
+    public Class<? extends IBaseResource> getResourceType() {
+        return Patient.class;
+    }
+    
+    @Read
     public Resource read(@IdParam IdType idType) {
-		var patientEntity = patientService.getById(idType.getIdPart());
-		if(patientEntity == null) {
-			FhirUtils.createOperationOutcome("No Patient with \"" + idType.getIdPart() + "\" found");
-		}
-		return patientEntity.toFhir();
-	}	
-	
-	@Search
-	public List<Patient> search(@OptionalParam(name ="name") StringType name,                            
+        var patientEntity = patientService.getById(idType.getIdPart());
+        if(patientEntity == null) {
+            FhirUtils.createOperationOutcome("No Patient with \"" + idType.getIdPart() + "\" found");
+        }
+        return patientEntity.toFhir();
+    }    
+    
+    @Search
+    public List<Patient> search(@OptionalParam(name ="name") StringType name,                            
             @Count Integer count, @Offset Integer offset) {
-		
-		var patientList = patientService.search(name != null? name.getValue(): "", offset, count);
-		return DataUtils.transform(patientList, PatientEntity::toFhir);
-	}
-	
+        
+        var patientList = patientService.search(name != null? name.getValue(): "", offset, count);
+        return DataUtils.transform(patientList, PatientEntity::toFhir);
+    }
+    
 }

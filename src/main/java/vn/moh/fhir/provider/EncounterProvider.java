@@ -25,35 +25,35 @@ import vn.moh.fhir.utils.FhirUtils;
 @Component
 public class EncounterProvider  implements IResourceProvider  {
 
-	@Autowired private EncounterService encounterService;
+    @Autowired private EncounterService encounterService;
 
-	@Override
-	public Class<? extends IBaseResource> getResourceType() {
-		return Encounter.class;
-	}
-	
-	@Read
+    @Override
+    public Class<? extends IBaseResource> getResourceType() {
+        return Encounter.class;
+    }
+    
+    @Read
     public Resource read(@IdParam IdType idType) {
-		var encounterEntity = encounterService.getById(idType.getIdPart());
-		if(encounterEntity == null) {
-			FhirUtils.createOperationOutcome("No Encounter with \"" + idType.getIdPart() + "\" found");
-		}
-		return encounterEntity.toFhir();
-	}	
-	
-	
-	@Search
-	public List<Encounter> search(
-			@OptionalParam(name ="patient") ReferenceParam patient,
+        var encounterEntity = encounterService.getById(idType.getIdPart());
+        if(encounterEntity == null) {
+            FhirUtils.createOperationOutcome("No Encounter with \"" + idType.getIdPart() + "\" found");
+        }
+        return encounterEntity.toFhir();
+    }    
+    
+    
+    @Search
+    public List<Encounter> search(
+            @OptionalParam(name ="patient") ReferenceParam patient,
             @Count Integer count, @Offset Integer offset) {
-		
-		
-		var lst = encounterService.search(
-				patient != null? patient.getValue(): "",  
-				offset, 
-				count);
-		
-		return DataUtils.transform(lst, EncounterEntity::toFhir);
-	}	
-	
+        
+        
+        var lst = encounterService.search(
+                patient != null? patient.getValue(): "",  
+                offset, 
+                count);
+        
+        return DataUtils.transform(lst, EncounterEntity::toFhir);
+    }    
+    
 }

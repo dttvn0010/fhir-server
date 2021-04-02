@@ -25,36 +25,36 @@ import vn.moh.fhir.utils.FhirUtils;
 @Component
 public class ServiceRequestProvider implements IResourceProvider {
 
-	@Autowired private ServiceRequestService serviceRequestService;
-	
-	@Override
-	public Class<? extends IBaseResource> getResourceType() {
-		return ServiceRequest.class;
-	}
+    @Autowired private ServiceRequestService serviceRequestService;
+    
+    @Override
+    public Class<? extends IBaseResource> getResourceType() {
+        return ServiceRequest.class;
+    }
 
-	@Read
+    @Read
     public Resource read(@IdParam IdType idType) {
-		var serviceRequestEntity = serviceRequestService.getById(idType.getIdPart());
-		if(serviceRequestEntity == null) {
-			FhirUtils.createOperationOutcome("No ServiceRequest with \"" + idType.getIdPart() + "\" found");
-		}
-		return serviceRequestEntity.toFhir();
-	}	
-	
-	
-	@Search
-	public List<ServiceRequest> search(
-			@OptionalParam(name ="patient") ReferenceParam patient,
-			@OptionalParam(name ="encounter") ReferenceParam encounter,
+        var serviceRequestEntity = serviceRequestService.getById(idType.getIdPart());
+        if(serviceRequestEntity == null) {
+            FhirUtils.createOperationOutcome("No ServiceRequest with \"" + idType.getIdPart() + "\" found");
+        }
+        return serviceRequestEntity.toFhir();
+    }    
+    
+    
+    @Search
+    public List<ServiceRequest> search(
+            @OptionalParam(name ="patient") ReferenceParam patient,
+            @OptionalParam(name ="encounter") ReferenceParam encounter,
             @Count Integer count, @Offset Integer offset) {
-		
-		
-		var lst = serviceRequestService.search(
-				patient != null? patient.getValue(): "", 
-				encounter != null? encounter.getValue(): "", 
-				offset, 
-				count);
-		
-		return DataUtils.transform(lst, ServiceRequestEntity::toFhir);
-	}
+        
+        
+        var lst = serviceRequestService.search(
+                patient != null? patient.getValue(): "", 
+                encounter != null? encounter.getValue(): "", 
+                offset, 
+                count);
+        
+        return DataUtils.transform(lst, ServiceRequestEntity::toFhir);
+    }
 }

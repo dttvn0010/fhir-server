@@ -15,7 +15,7 @@ import org.hl7.fhir.r4.model.StringType;
 
 public class FhirUtils {
 
-	public static Extension createExtension(String url, CodeableConcept concept) {
+    public static Extension createExtension(String url, CodeableConcept concept) {
         if(concept == null) return null;
         var extension = new Extension();
         extension.setUrl(url);
@@ -56,14 +56,14 @@ public class FhirUtils {
     }
     
     public static Extension findExtension(List<Extension> extension, @Nonnull String url) {
-    	if(extension != null) {
-    		for(var ext : extension) {
-    			if(url.equals(ext.getUrl())) {
-    				return ext;
-    			}
-    		}
-    	}
-    	return null;
+        if(extension != null) {
+            for(var ext : extension) {
+                if(url.equals(ext.getUrl())) {
+                    return ext;
+                }
+            }
+        }
+        return null;
     }
     
     public static OperationOutcome createOperationOutcome (String message) {

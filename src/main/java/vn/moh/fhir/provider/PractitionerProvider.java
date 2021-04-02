@@ -26,27 +26,27 @@ import vn.moh.fhir.utils.FhirUtils;
 @Component
 public class PractitionerProvider implements IResourceProvider {
 
-	@Autowired private PractitionerService practitionerService;
-	
-	@Override
-	public Class<? extends IBaseResource> getResourceType() {
-		return Practitioner.class;
-	}
-	
-	@Read
+    @Autowired private PractitionerService practitionerService;
+    
+    @Override
+    public Class<? extends IBaseResource> getResourceType() {
+        return Practitioner.class;
+    }
+    
+    @Read
     public Resource read(@IdParam IdType idType) {
-		var practitionerEntity = practitionerService.getById(idType.getIdPart());
-		if(practitionerEntity == null) {
-			FhirUtils.createOperationOutcome("No Practitioner with \"" + idType.getIdPart() + "\" found");
-		}
-		return practitionerEntity.toFhir();
-	}	
-	
-	@Search
-	public List<Practitioner> search(@OptionalParam(name ="name") StringType name,                            
+        var practitionerEntity = practitionerService.getById(idType.getIdPart());
+        if(practitionerEntity == null) {
+            FhirUtils.createOperationOutcome("No Practitioner with \"" + idType.getIdPart() + "\" found");
+        }
+        return practitionerEntity.toFhir();
+    }    
+    
+    @Search
+    public List<Practitioner> search(@OptionalParam(name ="name") StringType name,                            
             @Count Integer count, @Offset Integer offset) {
-		
-		var lst = practitionerService.search(name != null? name.getValue(): "", offset, count);
-		return DataUtils.transform(lst, PractitionerEntity::toFhir);
-	}
+        
+        var lst = practitionerService.search(name != null? name.getValue(): "", offset, count);
+        return DataUtils.transform(lst, PractitionerEntity::toFhir);
+    }
 }

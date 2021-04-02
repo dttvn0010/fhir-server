@@ -15,30 +15,30 @@ import vn.moh.fhir.model.entity.RelatedPersonEntity;
 @Service
 public class RelatedPersonService {
 
-	@Autowired private MongoTemplate mongoTemplate;
+    @Autowired private MongoTemplate mongoTemplate;
 
-	public RelatedPersonEntity getById(String id) {
-		var critera =  Criteria.where("id").is(id).and("_active").is(true);
-		return mongoTemplate.findOne(new Query(critera), RelatedPersonEntity.class);
-	}
-	
-	public List<RelatedPersonEntity> search(String patientId, Integer offset, Integer count) {
-		var critera =  Criteria.where("_active").is(true);
-							
-		if(!StringUtils.isEmpty(patientId)) {
-			critera.and("patient.reference").is(ResourceType.Patient + "/" + patientId);
-		}
-		
-		var query = new Query(critera);
-		
-		if(offset != null) {
-			query.skip(offset);
-		}
-		
-		if(count != null) {
-			query.limit(count);
-		}
-		
-		return mongoTemplate.find(query, RelatedPersonEntity.class);							
-	}
+    public RelatedPersonEntity getById(String id) {
+        var critera =  Criteria.where("id").is(id).and("_active").is(true);
+        return mongoTemplate.findOne(new Query(critera), RelatedPersonEntity.class);
+    }
+    
+    public List<RelatedPersonEntity> search(String patientId, Integer offset, Integer count) {
+        var critera =  Criteria.where("_active").is(true);
+                            
+        if(!StringUtils.isEmpty(patientId)) {
+            critera.and("patient.reference").is(ResourceType.Patient + "/" + patientId);
+        }
+        
+        var query = new Query(critera);
+        
+        if(offset != null) {
+            query.skip(offset);
+        }
+        
+        if(count != null) {
+            query.limit(count);
+        }
+        
+        return mongoTemplate.find(query, RelatedPersonEntity.class);                            
+    }
 }

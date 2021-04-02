@@ -25,36 +25,36 @@ import vn.moh.fhir.utils.FhirUtils;
 @Component
 public class SpecimenProvider implements IResourceProvider {
 
-	@Autowired private SpecimenService specimenService;
-	
-	@Override
-	public Class<? extends IBaseResource> getResourceType() {
-		return Specimen.class;
-	}
+    @Autowired private SpecimenService specimenService;
+    
+    @Override
+    public Class<? extends IBaseResource> getResourceType() {
+        return Specimen.class;
+    }
 
-	@Read
+    @Read
     public Resource read(@IdParam IdType idType) {
-		var specimenEntity = specimenService.getById(idType.getIdPart());
-		if(specimenEntity == null) {
-			FhirUtils.createOperationOutcome("No Specimen with \"" + idType.getIdPart() + "\" found");
-		}
-		return specimenEntity.toFhir();
-	}	
-	
-	
-	@Search
-	public List<Specimen> search(
-			@OptionalParam(name ="patient") ReferenceParam patient,
-			@OptionalParam(name ="encounter") ReferenceParam encounter,
+        var specimenEntity = specimenService.getById(idType.getIdPart());
+        if(specimenEntity == null) {
+            FhirUtils.createOperationOutcome("No Specimen with \"" + idType.getIdPart() + "\" found");
+        }
+        return specimenEntity.toFhir();
+    }    
+    
+    
+    @Search
+    public List<Specimen> search(
+            @OptionalParam(name ="patient") ReferenceParam patient,
+            @OptionalParam(name ="encounter") ReferenceParam encounter,
             @Count Integer count, @Offset Integer offset) {
-		
-		
-		var lst = specimenService.search(
-				patient != null? patient.getValue(): "", 
-				encounter != null? encounter.getValue(): "", 
-				offset, 
-				count);
-		
-		return DataUtils.transform(lst, SpecimenEntity::toFhir);
-	}
+        
+        
+        var lst = specimenService.search(
+                patient != null? patient.getValue(): "", 
+                encounter != null? encounter.getValue(): "", 
+                offset, 
+                count);
+        
+        return DataUtils.transform(lst, SpecimenEntity::toFhir);
+    }
 }

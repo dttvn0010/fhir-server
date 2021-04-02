@@ -25,36 +25,36 @@ import vn.moh.fhir.utils.FhirUtils;
 @Component
 public class DiagnosticReportProvider  implements IResourceProvider {
 
-	@Autowired private DiagnosticReportService diagnosticReportService;
-	
-	@Override
-	public Class<? extends IBaseResource> getResourceType() {
-		return DiagnosticReport.class;
-	}
+    @Autowired private DiagnosticReportService diagnosticReportService;
+    
+    @Override
+    public Class<? extends IBaseResource> getResourceType() {
+        return DiagnosticReport.class;
+    }
 
-	@Read
+    @Read
     public Resource read(@IdParam IdType idType) {
-		var diagnosticReportEntity = diagnosticReportService.getById(idType.getIdPart());
-		if(diagnosticReportEntity == null) {
-			FhirUtils.createOperationOutcome("No DiagnosticReport with \"" + idType.getIdPart() + "\" found");
-		}
-		return diagnosticReportEntity.toFhir();
-	}	
-	
-	
-	@Search
-	public List<DiagnosticReport> search(
-			@OptionalParam(name ="patient") ReferenceParam patient,
-			@OptionalParam(name ="encounter") ReferenceParam encounter,
+        var diagnosticReportEntity = diagnosticReportService.getById(idType.getIdPart());
+        if(diagnosticReportEntity == null) {
+            FhirUtils.createOperationOutcome("No DiagnosticReport with \"" + idType.getIdPart() + "\" found");
+        }
+        return diagnosticReportEntity.toFhir();
+    }    
+    
+    
+    @Search
+    public List<DiagnosticReport> search(
+            @OptionalParam(name ="patient") ReferenceParam patient,
+            @OptionalParam(name ="encounter") ReferenceParam encounter,
             @Count Integer count, @Offset Integer offset) {
-		
-		
-		var lst = diagnosticReportService.search(
-				patient != null? patient.getValue(): "", 
-				encounter != null? encounter.getValue(): "", 
-				offset, 
-				count);
-		
-		return DataUtils.transform(lst, DiagnosticReportEntity::toFhir);
-	}	
+        
+        
+        var lst = diagnosticReportService.search(
+                patient != null? patient.getValue(): "", 
+                encounter != null? encounter.getValue(): "", 
+                offset, 
+                count);
+        
+        return DataUtils.transform(lst, DiagnosticReportEntity::toFhir);
+    }    
 }

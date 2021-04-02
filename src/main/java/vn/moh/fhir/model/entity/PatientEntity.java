@@ -30,149 +30,149 @@ import vn.moh.fhir.utils.Constants.ExtensionURL;
 @JsonInclude(Include.NON_NULL)
 @Document(collection = "patient")
 @CompoundIndex(def = "{'id':1, '_active':1, '_version':1}", name = "index_by_default")
-public class PatientEntity {	
-	
-	@Id public ObjectId _id;
-	String id;
-	int _version;
-	boolean _active;
-	
-	Boolean active;
-	HumanNameModel name;
-	List<IdentifierModel> identifier;
-	String gender;
-	Date birthDate;
-	
-	List<ContactPointModel> telecom;
-	List<AddressModel> address;
-	
-	CodeableConceptModel maritalStatus;
-	List<AttachmentModel> photo;	
-	ReferenceModel managingOrganization;
-	
-	CodeableConceptModel education;
-	CodeableConceptModel ethnic;
-	CodeableConceptModel religion;
-	CodeableConceptModel job;
-	CodeableConceptModel nationality;
-	
-	public Patient toFhir() {
-		var patient = new Patient();
-		
-		patient.setId(id);
-		
-		if(active !=  null) {
-			patient.setActive(active);
-		}
-		
-		if(name != null) {
-			patient.addName(name.toFhir());
-		}
-		
-		if(!StringUtils.isEmpty(gender)) {
-			patient.setGender(AdministrativeGender.fromCode(gender));
-		}
-		
-		patient.setBirthDate(birthDate);
-		patient.setIdentifier(DataUtils.transform(identifier, IdentifierModel::toFhir));
-		patient.setTelecom(DataUtils.transform(telecom, ContactPointModel::toFhir));
-		patient.setAddress(DataUtils.transform(address, AddressModel::toFhir));
-		
-		if(maritalStatus != null) {
-			patient.setMaritalStatus(maritalStatus.toFhir());
-		}
-		
-		patient.setPhoto(DataUtils.transform(photo, AttachmentModel::toFhir));
-		
-		if(managingOrganization != null) {
-			patient.setManagingOrganization(managingOrganization.toFhir());
-		}
-		
-		if(education != null) {
-			patient.addExtension(FhirUtils.createExtension(ExtensionURL.PATIENT_EDUCATION, education.toFhir()));
-		}
-		
-		if(ethnic != null) {
-			patient.addExtension(FhirUtils.createExtension(ExtensionURL.PATIENT_ETHNIC, ethnic.toFhir()));
-		}
-		
-		if(religion != null) {
-			patient.addExtension(FhirUtils.createExtension(ExtensionURL.PATIENT_RELIGION, religion.toFhir()));
-		}
-		
-		if(job != null) {
-			patient.addExtension(FhirUtils.createExtension(ExtensionURL.PATIENT_JOB, job.toFhir()));
-		}
-		
-		if(nationality != null) {
-			patient.addExtension(FhirUtils.createExtension(ExtensionURL.PATIENT_NATIONALITY, nationality.toFhir()));
-		}
-		
-		return patient;		
-	}
-	
-	public PatientEntity(Patient patient) {
-		if(patient != null) {
-			this.id = patient.getId();
-			
-			if(patient.hasActive()) {
-				this.active = patient.getActive();
-			}
-			
-			if(patient.hasName()) {
-				this.name = HumanNameModel.fromFhir(patient.getNameFirstRep());
-			}
-			
-			if(patient.hasGender()) {
-				this.gender = patient.getGender().toCode();
-			}
-			
-			this.birthDate = patient.getBirthDate();
-			this.identifier = DataUtils.transform(patient.getIdentifier(), IdentifierModel::fromFhir);
-			this.telecom = DataUtils.transform(patient.getTelecom(), ContactPointModel::fromFhir);
-			this.address = DataUtils.transform(patient.getAddress(), AddressModel::fromFhir);
-					
-			if(patient.hasMaritalStatus()) {
-				this.maritalStatus = CodeableConceptModel.fromFhir(patient.getMaritalStatus());
-			}
-			
-			this.photo = DataUtils.transform(patient.getPhoto(), AttachmentModel::fromFhir);
-			
-			if(patient.hasManagingOrganization()) {
-				this.managingOrganization = ReferenceModel.fromFhir(patient.getManagingOrganization());
-			}
-			
-			var educationExt = FhirUtils.findExtension(patient.getExtension(), ExtensionURL.PATIENT_EDUCATION);
-			if(educationExt != null && educationExt.getValue() instanceof CodeableConcept) {
-				this.education = CodeableConceptModel.fromFhir((CodeableConcept) educationExt.getValue());
-			}
-			
-			var ethnicExt = FhirUtils.findExtension(patient.getExtension(), ExtensionURL.PATIENT_ETHNIC);
-			if(ethnicExt != null && ethnicExt.getValue() instanceof CodeableConcept) {
-				this.ethnic = CodeableConceptModel.fromFhir((CodeableConcept) ethnicExt.getValue());
-			}
-			
-			var religionExt = FhirUtils.findExtension(patient.getExtension(), ExtensionURL.PATIENT_RELIGION);
-			if(religionExt != null && religionExt.getValue() instanceof CodeableConcept) {
-				this.religion = CodeableConceptModel.fromFhir((CodeableConcept) religionExt.getValue());
-			}
-			
-			var jobExt = FhirUtils.findExtension(patient.getExtension(), ExtensionURL.PATIENT_JOB);
-			if(jobExt != null && jobExt.getValue() instanceof CodeableConcept) {
-				this.job = CodeableConceptModel.fromFhir((CodeableConcept) jobExt.getValue());
-			}
-			
-			var nationalityExt = FhirUtils.findExtension(patient.getExtension(), ExtensionURL.PATIENT_NATIONALITY);
-			if(nationalityExt != null && nationalityExt.getValue() instanceof CodeableConcept) {
-				this.nationality = CodeableConceptModel.fromFhir((CodeableConcept) nationalityExt.getValue());
-			}
-		}
-	}
-	
-	public static PatientEntity fromFhir(Patient patient) {
-		if(patient != null) {
-			return new PatientEntity(patient);
-		}
-		return null;	
-	}
+public class PatientEntity {    
+    
+    @Id public ObjectId _id;
+    String id;
+    int _version;
+    boolean _active;
+    
+    Boolean active;
+    HumanNameModel name;
+    List<IdentifierModel> identifier;
+    String gender;
+    Date birthDate;
+    
+    List<ContactPointModel> telecom;
+    List<AddressModel> address;
+    
+    CodeableConceptModel maritalStatus;
+    List<AttachmentModel> photo;    
+    ReferenceModel managingOrganization;
+    
+    CodeableConceptModel education;
+    CodeableConceptModel ethnic;
+    CodeableConceptModel religion;
+    CodeableConceptModel job;
+    CodeableConceptModel nationality;
+    
+    public Patient toFhir() {
+        var patient = new Patient();
+        
+        patient.setId(id);
+        
+        if(active !=  null) {
+            patient.setActive(active);
+        }
+        
+        if(name != null) {
+            patient.addName(name.toFhir());
+        }
+        
+        if(!StringUtils.isEmpty(gender)) {
+            patient.setGender(AdministrativeGender.fromCode(gender));
+        }
+        
+        patient.setBirthDate(birthDate);
+        patient.setIdentifier(DataUtils.transform(identifier, IdentifierModel::toFhir));
+        patient.setTelecom(DataUtils.transform(telecom, ContactPointModel::toFhir));
+        patient.setAddress(DataUtils.transform(address, AddressModel::toFhir));
+        
+        if(maritalStatus != null) {
+            patient.setMaritalStatus(maritalStatus.toFhir());
+        }
+        
+        patient.setPhoto(DataUtils.transform(photo, AttachmentModel::toFhir));
+        
+        if(managingOrganization != null) {
+            patient.setManagingOrganization(managingOrganization.toFhir());
+        }
+        
+        if(education != null) {
+            patient.addExtension(FhirUtils.createExtension(ExtensionURL.PATIENT_EDUCATION, education.toFhir()));
+        }
+        
+        if(ethnic != null) {
+            patient.addExtension(FhirUtils.createExtension(ExtensionURL.PATIENT_ETHNIC, ethnic.toFhir()));
+        }
+        
+        if(religion != null) {
+            patient.addExtension(FhirUtils.createExtension(ExtensionURL.PATIENT_RELIGION, religion.toFhir()));
+        }
+        
+        if(job != null) {
+            patient.addExtension(FhirUtils.createExtension(ExtensionURL.PATIENT_JOB, job.toFhir()));
+        }
+        
+        if(nationality != null) {
+            patient.addExtension(FhirUtils.createExtension(ExtensionURL.PATIENT_NATIONALITY, nationality.toFhir()));
+        }
+        
+        return patient;        
+    }
+    
+    public PatientEntity(Patient patient) {
+        if(patient != null) {
+            this.id = patient.getId();
+            
+            if(patient.hasActive()) {
+                this.active = patient.getActive();
+            }
+            
+            if(patient.hasName()) {
+                this.name = HumanNameModel.fromFhir(patient.getNameFirstRep());
+            }
+            
+            if(patient.hasGender()) {
+                this.gender = patient.getGender().toCode();
+            }
+            
+            this.birthDate = patient.getBirthDate();
+            this.identifier = DataUtils.transform(patient.getIdentifier(), IdentifierModel::fromFhir);
+            this.telecom = DataUtils.transform(patient.getTelecom(), ContactPointModel::fromFhir);
+            this.address = DataUtils.transform(patient.getAddress(), AddressModel::fromFhir);
+                    
+            if(patient.hasMaritalStatus()) {
+                this.maritalStatus = CodeableConceptModel.fromFhir(patient.getMaritalStatus());
+            }
+            
+            this.photo = DataUtils.transform(patient.getPhoto(), AttachmentModel::fromFhir);
+            
+            if(patient.hasManagingOrganization()) {
+                this.managingOrganization = ReferenceModel.fromFhir(patient.getManagingOrganization());
+            }
+            
+            var educationExt = FhirUtils.findExtension(patient.getExtension(), ExtensionURL.PATIENT_EDUCATION);
+            if(educationExt != null && educationExt.getValue() instanceof CodeableConcept) {
+                this.education = CodeableConceptModel.fromFhir((CodeableConcept) educationExt.getValue());
+            }
+            
+            var ethnicExt = FhirUtils.findExtension(patient.getExtension(), ExtensionURL.PATIENT_ETHNIC);
+            if(ethnicExt != null && ethnicExt.getValue() instanceof CodeableConcept) {
+                this.ethnic = CodeableConceptModel.fromFhir((CodeableConcept) ethnicExt.getValue());
+            }
+            
+            var religionExt = FhirUtils.findExtension(patient.getExtension(), ExtensionURL.PATIENT_RELIGION);
+            if(religionExt != null && religionExt.getValue() instanceof CodeableConcept) {
+                this.religion = CodeableConceptModel.fromFhir((CodeableConcept) religionExt.getValue());
+            }
+            
+            var jobExt = FhirUtils.findExtension(patient.getExtension(), ExtensionURL.PATIENT_JOB);
+            if(jobExt != null && jobExt.getValue() instanceof CodeableConcept) {
+                this.job = CodeableConceptModel.fromFhir((CodeableConcept) jobExt.getValue());
+            }
+            
+            var nationalityExt = FhirUtils.findExtension(patient.getExtension(), ExtensionURL.PATIENT_NATIONALITY);
+            if(nationalityExt != null && nationalityExt.getValue() instanceof CodeableConcept) {
+                this.nationality = CodeableConceptModel.fromFhir((CodeableConcept) nationalityExt.getValue());
+            }
+        }
+    }
+    
+    public static PatientEntity fromFhir(Patient patient) {
+        if(patient != null) {
+            return new PatientEntity(patient);
+        }
+        return null;    
+    }
 }

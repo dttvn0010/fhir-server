@@ -24,34 +24,34 @@ import vn.moh.fhir.utils.FhirUtils;
 
 @Component
 public class RelatedPersonProvider implements IResourceProvider {
-	@Autowired private RelatedPersonService relatedPersonService;
+    @Autowired private RelatedPersonService relatedPersonService;
 
-	@Override
-	public Class<? extends IBaseResource> getResourceType() {
-		return RelatedPerson.class;
-	}
-	
-	@Read
+    @Override
+    public Class<? extends IBaseResource> getResourceType() {
+        return RelatedPerson.class;
+    }
+    
+    @Read
     public Resource read(@IdParam IdType idType) {
-		var relatedPersonEntity = relatedPersonService.getById(idType.getIdPart());
-		if(relatedPersonEntity == null) {
-			FhirUtils.createOperationOutcome("No RelatedPerson with \"" + idType.getIdPart() + "\" found");
-		}
-		return relatedPersonEntity.toFhir();
-	}	
-	
-	
-	@Search
-	public List<RelatedPerson> search(
-			@OptionalParam(name ="patient") ReferenceParam patient,
+        var relatedPersonEntity = relatedPersonService.getById(idType.getIdPart());
+        if(relatedPersonEntity == null) {
+            FhirUtils.createOperationOutcome("No RelatedPerson with \"" + idType.getIdPart() + "\" found");
+        }
+        return relatedPersonEntity.toFhir();
+    }    
+    
+    
+    @Search
+    public List<RelatedPerson> search(
+            @OptionalParam(name ="patient") ReferenceParam patient,
             @Count Integer count, @Offset Integer offset) {
-		
-		
-		var lst = relatedPersonService.search(
-				patient != null? patient.getValue(): "",  
-				offset, 
-				count);
-		
-		return DataUtils.transform(lst, RelatedPersonEntity::toFhir);
-	}
+        
+        
+        var lst = relatedPersonService.search(
+                patient != null? patient.getValue(): "",  
+                offset, 
+                count);
+        
+        return DataUtils.transform(lst, RelatedPersonEntity::toFhir);
+    }
 }

@@ -25,28 +25,28 @@ import vn.moh.fhir.utils.FhirUtils;
 @Component
 public class MedicationProvider  implements IResourceProvider {
 
-	@Autowired private MedicationService medicationService;
-	
-	@Override
-	public Class<? extends IBaseResource> getResourceType() {
-		return Medication.class;
-	}
-	
-	@Read
+    @Autowired private MedicationService medicationService;
+    
+    @Override
+    public Class<? extends IBaseResource> getResourceType() {
+        return Medication.class;
+    }
+    
+    @Read
     public Resource read(@IdParam IdType idType) {
-		var medicationEntity = medicationService.getById(idType.getIdPart());
-		if(medicationEntity == null) {
-			FhirUtils.createOperationOutcome("No Medication with \"" + idType.getIdPart() + "\" found");
-		}
-		return medicationEntity.toFhir();
-	}	
-	
-	@Search
-	public List<Medication> search(@OptionalParam(name ="name") StringType name,                            
+        var medicationEntity = medicationService.getById(idType.getIdPart());
+        if(medicationEntity == null) {
+            FhirUtils.createOperationOutcome("No Medication with \"" + idType.getIdPart() + "\" found");
+        }
+        return medicationEntity.toFhir();
+    }    
+    
+    @Search
+    public List<Medication> search(@OptionalParam(name ="name") StringType name,                            
             @Count Integer count, @Offset Integer offset) {
-		
-		var lst = medicationService.search(name != null? name.getValue(): "", offset, count);
-		return DataUtils.transform(lst, MedicationEntity::toFhir);
-	}
+        
+        var lst = medicationService.search(name != null? name.getValue(): "", offset, count);
+        return DataUtils.transform(lst, MedicationEntity::toFhir);
+    }
 
 }
