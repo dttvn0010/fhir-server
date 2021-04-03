@@ -11,15 +11,21 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import vn.moh.fhir.model.entity.MedicationRequestEntity;
+import vn.moh.fhir.repository.MedicationRequestRepository;
 
 @Service
 public class MedicationRequestService {
 
+    @Autowired private MedicationRequestRepository medicationRequestRepository;
     @Autowired private MongoTemplate mongoTemplate;
 
-    public MedicationRequestEntity getById(String id) {
-        var critera =  Criteria.where("id").is(id).and("_active").is(true);
+    public MedicationRequestEntity getByUuid(String uuid) {
+        var critera =  Criteria.where("uuid").is(uuid).and("_active").is(true);
         return mongoTemplate.findOne(new Query(critera), MedicationRequestEntity.class);
+    }
+    
+    public MedicationRequestEntity save(MedicationRequestEntity medicationRequestEntity) {
+        return medicationRequestRepository.save(medicationRequestEntity);
     }
     
     public List<MedicationRequestEntity> search(String patientId, String encounterId, Integer offset, Integer count) {

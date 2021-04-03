@@ -20,6 +20,15 @@ public class RatioModel {
         return ratio;
     }
     
+    public RatioModel() {
+        
+    }
+    
+    public RatioModel(QuantityModel numerator, QuantityModel denominator) {
+        this.numerator = numerator;
+        this.denominator = denominator;
+    }
+    
     public RatioModel(Ratio ratio) {
         if(ratio != null) {
             if(ratio.hasNumerator()) {

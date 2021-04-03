@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.hl7.fhir.r4.model.DateTimeType;
 import org.hl7.fhir.r4.model.Procedure;
+import org.hl7.fhir.r4.model.ResourceType;
 import org.hl7.fhir.r4.model.Procedure.ProcedureStatus;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
@@ -23,7 +24,7 @@ import vn.moh.fhir.utils.DataUtils;
 
 @JsonInclude(Include.NON_NULL)
 @Document(collection = "procedure")
-@CompoundIndex(def = "{'id':1, '_active':1, '_version':1, 'patient.reference':1, 'encounter.reference':1}", name = "index_by_default")
+@CompoundIndex(def = "{'uuid':1, '_active':1, '_version':1, 'patient.reference':1, 'encounter.reference':1}", name = "index_by_default")
 public class ProcedureEntity {
     
     public static class ProcedurePerformer {
@@ -46,6 +47,10 @@ public class ProcedureEntity {
             }
             
             return procedurePerformer;
+        }
+        
+        public ProcedurePerformer() {
+            
         }
         
         public ProcedurePerformer(Procedure.ProcedurePerformerComponent procedurePerformer) {
@@ -72,8 +77,8 @@ public class ProcedureEntity {
         }
     }
 
-    @Id public ObjectId _id;
-    String id;
+    @Id public ObjectId id;
+    String uuid;
     int _version;
     boolean _active;
     
@@ -84,6 +89,9 @@ public class ProcedureEntity {
     
     ReferenceModel patient;
     ReferenceModel encounter;
+    
+    CodeableConceptModel category;
+    CodeableConceptModel code;
     
     Date performedDate;
     ReferenceModel recorder;
@@ -103,7 +111,7 @@ public class ProcedureEntity {
     public Procedure toFhir() {
         var procedure = new Procedure();
         
-        procedure.setId(id);
+        procedure.setId(uuid);
         procedure.setIdentifier(DataUtils.transform(identifier, IdentifierModel::toFhir));
         procedure.setBasedOn(DataUtils.transform(basedOn, ReferenceModel::toFhir));
         procedure.setPartOf(DataUtils.transform(partOf, ReferenceModel::toFhir));
@@ -118,6 +126,14 @@ public class ProcedureEntity {
         
         if(encounter != null) {
             procedure.setEncounter(encounter.toFhir());
+        }
+        
+        if(category != null) {
+            procedure.setCategory(category.toFhir());
+        }
+        
+        if(code != null) {
+            procedure.setCode(code.toFhir());
         }
         
         if(performedDate !=  null) {
@@ -153,9 +169,19 @@ public class ProcedureEntity {
         return procedure;
     }
     
+    public ProcedureEntity() {
+        
+    }
+    
     public ProcedureEntity(Procedure procedure) {
         if(procedure != null) {
-            this.id = procedure.getId();
+            this.uuid = procedure.getId();
+            
+            if(this.uuid != null && this.uuid.startsWith(ResourceType.Procedure + "/")) {
+                this.uuid = this.uuid.replace(ResourceType.Procedure + "/", "");
+            }
+            
+            
             this.identifier = DataUtils.transform(procedure.getIdentifier(), IdentifierModel::fromFhir);
             this.basedOn = DataUtils.transform(procedure.getBasedOn(), ReferenceModel::fromFhir);
             this.partOf =  DataUtils.transform(procedure.getPartOf(), ReferenceModel::fromFhir);
@@ -172,8 +198,17 @@ public class ProcedureEntity {
                 this.encounter = ReferenceModel.fromFhir(procedure.getEncounter());
             }
             
+            if(procedure.hasCategory()) {
+                this.category = CodeableConceptModel.fromFhir(procedure.getCategory());
+            }
+            
+            if(procedure.hasCode()) {
+                this.code = CodeableConceptModel.fromFhir(procedure.getCode());
+            }
+            
             if(procedure.hasPerformedDateTimeType()) {
                 this.performedDate = procedure.getPerformedDateTimeType().getValue();
+                
             }else if(procedure.hasPerformedPeriod()) {
                 this.performedDate = procedure.getPerformedPeriod().getStart();
             }
@@ -211,5 +246,17 @@ public class ProcedureEntity {
             return new ProcedureEntity(procedure);
         }
         return null;
+    }
+    
+    public int get_Version() {
+        return _version;
+    }
+    
+    public void set_Version(int _version) {
+        this._version = _version;
+    }
+    
+    public void set_Active(boolean _active) {
+        this._active = _active;
     }
 }

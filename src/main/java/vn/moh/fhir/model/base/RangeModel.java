@@ -21,6 +21,10 @@ public class RangeModel {
         return range;
     }
     
+    public RangeModel() {
+        
+    }
+    
     public RangeModel(Range range) {
         if(range != null) {
             if(range.hasLow()) {

@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.hl7.fhir.r4.model.DiagnosticReport;
+import org.hl7.fhir.r4.model.ResourceType;
 import org.hl7.fhir.r4.model.DiagnosticReport.DiagnosticReportStatus;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
@@ -22,7 +23,7 @@ import vn.moh.fhir.utils.DataUtils;
 
 @JsonInclude(Include.NON_NULL)
 @Document(collection = "diagnostic_report")
-@CompoundIndex(def = "{'id':1, '_active':1, '_version':1, 'patient.reference':1, 'encounter.reference':1}", name = "index_by_default")
+@CompoundIndex(def = "{'uuid':1, '_active':1, '_version':1, 'patient.reference':1, 'encounter.reference':1}", name = "index_by_default")
 public class DiagnosticReportEntity {
 
     public static class DiagnosticReportMedia {
@@ -36,6 +37,10 @@ public class DiagnosticReportEntity {
                 media.setLink(link.toFhir());
             }
             return media;
+        }
+                
+        public DiagnosticReportMedia() {
+            
         }
         
         public DiagnosticReportMedia(DiagnosticReport.DiagnosticReportMediaComponent media) {
@@ -55,8 +60,8 @@ public class DiagnosticReportEntity {
         }
     }
     
-    @Id public ObjectId _id;
-    String id;
+    @Id public ObjectId id;
+    String uuid;
     int _version;
     boolean _active;
     
@@ -81,7 +86,7 @@ public class DiagnosticReportEntity {
     public DiagnosticReport toFhir() {
         var diagnosticReport = new DiagnosticReport();
         
-        diagnosticReport.setId(id);        
+        diagnosticReport.setId(uuid);        
         diagnosticReport.setIdentifier(DataUtils.transform(identifier, IdentifierModel::toFhir));
         diagnosticReport.setBasedOn(DataUtils.transform(basedOn, ReferenceModel::toFhir));
         
@@ -123,9 +128,18 @@ public class DiagnosticReportEntity {
         return diagnosticReport;
     }
     
+    public DiagnosticReportEntity() {
+        
+    }
+    
     public DiagnosticReportEntity(DiagnosticReport diagnosticReport) {
         if(diagnosticReport != null) {
-            this.id = diagnosticReport.getId();
+            this.uuid = diagnosticReport.getId();
+            
+            if(this.uuid != null && this.uuid.startsWith(ResourceType.DiagnosticReport + "/")) {
+                this.uuid = this.uuid.replace(ResourceType.DiagnosticReport + "/", "");
+            }
+            
             this.identifier = DataUtils.transform(diagnosticReport.getIdentifier(), IdentifierModel::fromFhir);
             this.basedOn = DataUtils.transform(diagnosticReport.getBasedOn(), ReferenceModel::fromFhir);
             
@@ -176,5 +190,17 @@ public class DiagnosticReportEntity {
             return new DiagnosticReportEntity(diagnosticReport);
         }
         return null;
+    }
+    
+    public int get_Version() {
+        return _version;
+    }
+    
+    public void set_Version(int _version) {
+        this._version = _version;
+    }
+    
+    public void set_Active(boolean _active) {
+        this._active = _active;
     }
 }

@@ -15,6 +15,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.r4.model.ResourceType;
 
 import vn.moh.fhir.model.base.AddressModel;
 import vn.moh.fhir.model.base.AttachmentModel;
@@ -29,11 +30,11 @@ import vn.moh.fhir.utils.Constants.ExtensionURL;
 
 @JsonInclude(Include.NON_NULL)
 @Document(collection = "patient")
-@CompoundIndex(def = "{'id':1, '_active':1, '_version':1}", name = "index_by_default")
+@CompoundIndex(def = "{'uuid':1, '_active':1, '_version':1}", name = "index_by_default")
 public class PatientEntity {    
     
-    @Id public ObjectId _id;
-    String id;
+    @Id public ObjectId id;
+    String uuid;
     int _version;
     boolean _active;
     
@@ -59,7 +60,7 @@ public class PatientEntity {
     public Patient toFhir() {
         var patient = new Patient();
         
-        patient.setId(id);
+        patient.setId(uuid);
         
         if(active !=  null) {
             patient.setActive(active);
@@ -111,9 +112,17 @@ public class PatientEntity {
         return patient;        
     }
     
+    public PatientEntity() {
+        
+    }
+    
     public PatientEntity(Patient patient) {
         if(patient != null) {
-            this.id = patient.getId();
+            this.uuid = patient.getId();
+            
+            if(this.uuid != null && this.uuid.startsWith(ResourceType.Patient + "/")) {
+                this.uuid = this.uuid.replace(ResourceType.Patient + "/", "");
+            }
             
             if(patient.hasActive()) {
                 this.active = patient.getActive();
@@ -174,5 +183,17 @@ public class PatientEntity {
             return new PatientEntity(patient);
         }
         return null;    
+    }
+    
+    public int get_Version() {
+        return _version;
+    }
+    
+    public void set_Version(int _version) {
+        this._version = _version;
+    }
+    
+    public void set_Active(boolean _active) {
+        this._active = _active;
     }
 }

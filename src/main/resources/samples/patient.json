@@ -1,0 +1,78 @@
+{  
+  "name": [
+    {
+      "use": "official",
+      "text": "Võ Thị Đẹp",
+      "given": [
+        "Thị",
+        "Đẹp"
+      ],
+      "family": "Võ"
+    }
+  ],
+  "gender": "female",
+  "telecom": [
+    {
+       "value": "09321321",
+       "system": "phone"
+    }
+  ],
+  "birthDate": "1952-01-01",
+  "extension": [
+    {
+      "url": "http://fhir.moh.vn/StructureDefinition/Patient-Job",
+      "valueCodeableConcept": {
+        "text": "Nghề khác",
+        "coding": [
+          {
+            "code": "28",
+            "system": "http://fhir.moh.vn/CodeSystem/Job",
+            "display": "Nghề khác"
+          }
+        ]
+      }
+    },
+    {
+      "url": "http://fhir.moh.vn/StructureDefinition/Patient-Ethnic",
+      "valueCodeableConcept": {
+        "text": "Kinh",
+        "coding": [
+          {
+            "code": "01",
+            "system": "http://fhir.moh.vn/CodeSystem/Ethnic",
+            "display": "Kinh"
+          }
+        ]
+      }
+    },
+    {
+      "url": "http://fhir.moh.vn/StructureDefinition/Patient-Nationality",
+      "valueCodeableConcept": {
+        "text": "Việt Nam",
+        "coding": [
+          {
+            "code": "VNM",
+            "system": "http://fhir.moh.vn/CodeSystem/Nationality",
+            "display": "Việt Nam"
+          }
+        ]
+      }
+    }
+  ],
+  "identifier": [
+    {
+      "type": {
+        "text": "Số thẻ bảo hiểm xã hội",
+        "coding": [
+          {
+            "code": "MC",
+            "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+            "display": "Medicare number"
+          }
+        ]
+      },
+      "value": "TEL100101101"
+    }
+  ],
+  "resourceType": "Patient"
+}

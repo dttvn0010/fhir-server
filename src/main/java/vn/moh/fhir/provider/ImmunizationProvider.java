@@ -34,7 +34,7 @@ public class ImmunizationProvider implements IResourceProvider {
 
     @Read
     public Resource read(@IdParam IdType idType) {
-        var immunizationEntity = immunizationService.getById(idType.getIdPart());
+        var immunizationEntity = immunizationService.getByUuid(idType.getIdPart());
         if(immunizationEntity == null) {
             FhirUtils.createOperationOutcome("No Immunization with \"" + idType.getIdPart() + "\" found");
         }

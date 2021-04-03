@@ -33,7 +33,7 @@ public class RelatedPersonProvider implements IResourceProvider {
     
     @Read
     public Resource read(@IdParam IdType idType) {
-        var relatedPersonEntity = relatedPersonService.getById(idType.getIdPart());
+        var relatedPersonEntity = relatedPersonService.getByUuid(idType.getIdPart());
         if(relatedPersonEntity == null) {
             FhirUtils.createOperationOutcome("No RelatedPerson with \"" + idType.getIdPart() + "\" found");
         }

@@ -11,6 +11,8 @@ import org.hl7.fhir.r4.model.DecimalType;
 import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.IntegerType;
 import org.hl7.fhir.r4.model.OperationOutcome;
+import org.hl7.fhir.r4.model.OperationOutcome.IssueSeverity;
+import org.hl7.fhir.r4.model.OperationOutcome.IssueType;
 import org.hl7.fhir.r4.model.StringType;
 
 public class FhirUtils {
@@ -74,7 +76,19 @@ public class FhirUtils {
                 .setSeverity(OperationOutcome.IssueSeverity.ERROR)
                 .setDiagnostics(message)
                 .setDetails(
-                        new CodeableConcept().setText(message)
+                    new CodeableConcept().setText(message)
+                );
+        return outcome;
+    }
+    
+    public static OperationOutcome createOperationOutcome(String diagnostics, String message, IssueSeverity severity , IssueType issueType) {
+        var outcome = new OperationOutcome();
+        outcome.addIssue()
+                .setCode(issueType)
+                .setSeverity(severity)
+                .setDiagnostics(diagnostics)
+                .setDetails(
+                    new CodeableConcept().setText(message)
                 );
         return outcome;
     }

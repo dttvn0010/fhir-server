@@ -1,0 +1,36 @@
+{
+  "resourceType": "Specimen",
+  "type": {
+    "coding": [
+      {
+        "system": "http://fhir.moh.vn/CodeSystem/Specimen-Type",
+        "code": "01",
+        "display": "Máu"
+      }
+    ],
+    "text": "Máu"
+  },
+  "subject": {
+    "reference": "Patient/3f5b54c5-c872-4eb9-86c8-c98775bce94b"
+  },
+  "request": [
+    {
+      "reference": "ServiceRequest/a07fbcf8-5b61-4946-ab47-93d092ecc7f0"
+    }
+  ],
+  "collection": {
+    "collectedDateTime": "2020-04-14T10:00:00+07:00"
+  },
+  "condition": [
+    {
+      "coding": [
+        {
+          "system": "http://fhir.moh.vn/CodeSystem/Specimen-Condition",
+          "code": "01",
+          "display": "Bình thường"
+        }
+      ],
+      "text": "Bình thường"
+    }
+  ]
+}

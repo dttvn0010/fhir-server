@@ -35,7 +35,7 @@ public class PractitionerProvider implements IResourceProvider {
     
     @Read
     public Resource read(@IdParam IdType idType) {
-        var practitionerEntity = practitionerService.getById(idType.getIdPart());
+        var practitionerEntity = practitionerService.getByUuid(idType.getIdPart());
         if(practitionerEntity == null) {
             FhirUtils.createOperationOutcome("No Practitioner with \"" + idType.getIdPart() + "\" found");
         }

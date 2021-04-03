@@ -1,0 +1,63 @@
+{
+  "resourceType": "Procedure",
+  "basedOn": [
+    {
+      "reference": "ServiceRequest/9f6edc7b-9139-4a2d-936b-b0507f44afd5"
+    }
+  ],
+  "status": "completed",
+  "category": {
+    "coding": [
+      {
+        "system": "http://fhir.moh.vn/CodeSystem/Procedure-Category",
+        "code": "03",
+        "display": "Chẩn đoán hình ảnh"
+      }
+    ],
+    "text": "Chẩn đoán hình ảnh"
+  },
+  "code": {
+    "coding": [
+      {
+        "system": "http://fhir.moh.vn/CodeSystem/Procedure",
+        "code": "01",
+        "display": "Nội soi ổ bụng"
+      }
+    ],
+    "text": "Nội soi ổ bụng"
+  },
+  "subject": {
+    "reference": "Patient/9da9b4c7-aeae-402d-85e0-9c5d7c56df8e"
+  },
+  "encounter": {
+    "reference": "Encounter/4ea4bf36-b1ba-45b5-be82-0a89286ab4ed"
+  },
+  "performedDateTime": "2020-04-14T15:30:00+07:00",
+  "performer": [
+    {
+      "actor": {
+        "identifier": {
+          "type": {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                "code": "MD"
+              }
+            ],
+            "text": "Mã định danh bác sỹ"
+          },
+          "value": "112321"
+        },
+        "display": "Bác sỹ Thực Hiện"
+      }
+    }
+  ],
+  "location": {
+    "display": "Khoa chẩn đoán hình ảnh"
+  },
+  "report": [
+    {
+      "reference": "DiagnosticReport/5a1151d4-00e2-4dac-93ea-969d5129b22f"
+    }
+  ]
+}

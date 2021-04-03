@@ -16,8 +16,8 @@ public class PractitionerService {
 
     @Autowired private MongoTemplate mongoTemplate;
 
-    public PractitionerEntity getById(String id) {
-        var critera =  Criteria.where("id").is(id).and("_active").is(true);
+    public PractitionerEntity getByUuid(String uuid) {
+        var critera =  Criteria.where("uuid").is(uuid).and("_active").is(true);
         return mongoTemplate.findOne(new Query(critera), PractitionerEntity.class);
     }
     

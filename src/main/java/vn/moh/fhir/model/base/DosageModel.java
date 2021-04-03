@@ -27,16 +27,27 @@ public class DosageModel {
             return doseAndRate;
         }
         
+        public DosageDoseAndRate() {
+            
+        }
+        
         public DosageDoseAndRate(Dosage.DosageDoseAndRateComponent doseAndRate) {
             if(doseAndRate != null) {
                 if(doseAndRate.hasType()) {
                     this.type = CodeableConceptModel.fromFhir(doseAndRate.getType());
                 }
+                
                 if(doseAndRate.hasDoseQuantity()) {
                     this.dose = QuantityModel.fromFhir(doseAndRate.getDoseQuantity());
                 }
+                
                 if(doseAndRate.hasRateRatio()) {
                     this.rate = RatioModel.fromFhir(doseAndRate.getRateRatio());
+                    
+                }else if(doseAndRate.hasRateQuantity()) {
+                    var numerator = QuantityModel.fromFhir(doseAndRate.getRateQuantity());
+                    var denominator = new QuantityModel(1, "");
+                    this.rate = new RatioModel(numerator, denominator);
                 }
             }
         }
@@ -95,7 +106,11 @@ public class DosageModel {
         return dosage;
     }
     
-     public DosageModel(Dosage dosage) {
+    public DosageModel() {
+        
+    }
+    
+    public DosageModel(Dosage dosage) {
          if(dosage != null) {
              if(dosage.hasSequence()) {
                  this.sequence = dosage.getSequence();

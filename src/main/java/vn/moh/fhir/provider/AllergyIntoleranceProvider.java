@@ -34,7 +34,7 @@ public class AllergyIntoleranceProvider implements IResourceProvider{
     
     @Read
     public Resource read(@IdParam IdType idType) {
-        var allergyIntoleranceEntity = allergyIntoleranceService.getById(idType.getIdPart());
+        var allergyIntoleranceEntity = allergyIntoleranceService.getByUuid(idType.getIdPart());
         if(allergyIntoleranceEntity == null) {
             FhirUtils.createOperationOutcome("No AllergyIntolerance with \"" + idType.getIdPart() + "\" found");
         }

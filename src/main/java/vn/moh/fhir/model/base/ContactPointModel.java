@@ -37,6 +37,10 @@ public class ContactPointModel {
         return contactPoint;
     }
     
+    public ContactPointModel() {
+        
+    }
+    
     public ContactPointModel(ContactPoint contactPoint) {
         if(contactPoint != null) {
             if(contactPoint.hasSystem()) {

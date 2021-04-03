@@ -34,7 +34,7 @@ public class OrganizationProvider implements IResourceProvider {
     
     @Read
     public Resource read(@IdParam IdType idType) {
-        var orgnanizationEntity = organizationService.getById(idType.getIdPart());
+        var orgnanizationEntity = organizationService.getByUuid(idType.getIdPart());
         if(orgnanizationEntity == null) {
             FhirUtils.createOperationOutcome("No Organization with \"" + idType.getIdPart() + "\" found");
         }

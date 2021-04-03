@@ -11,15 +11,21 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import vn.moh.fhir.model.entity.ProcedureEntity;
+import vn.moh.fhir.repository.ProcedureRepository;
 
 @Service
 public class ProcedureService {
 
+    @Autowired private ProcedureRepository procedureRepository;
     @Autowired private MongoTemplate mongoTemplate;
 
-    public ProcedureEntity getById(String id) {
-        var critera =  Criteria.where("id").is(id).and("_active").is(true);
+    public ProcedureEntity getByUuid(String uuid) {
+        var critera =  Criteria.where("uuid").is(uuid).and("_active").is(true);
         return mongoTemplate.findOne(new Query(critera), ProcedureEntity.class);
+    }
+    
+    public ProcedureEntity save(ProcedureEntity procedureEntity) {
+        return procedureRepository.save(procedureEntity);
     }
     
     public List<ProcedureEntity> search(String patientId, String encounterId, Integer offset, Integer count) {

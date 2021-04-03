@@ -31,6 +31,10 @@ public class AttachmentModel {
         return attachment;        
     }
     
+    public AttachmentModel() {
+        
+    }
+    
     public AttachmentModel(Attachment attachment) {
         if(attachment !=  null) {
             this.contentType = attachment.getContentType();

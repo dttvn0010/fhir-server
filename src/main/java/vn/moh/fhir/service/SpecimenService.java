@@ -11,26 +11,28 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import vn.moh.fhir.model.entity.SpecimenEntity;
+import vn.moh.fhir.repository.SpecimenRepository;
 
 @Service
 public class SpecimenService {
 
+    @Autowired private SpecimenRepository specimenRepository;
     @Autowired private MongoTemplate mongoTemplate;
 
-    public SpecimenEntity getById(String id) {
-        var critera =  Criteria.where("id").is(id).and("_active").is(true);
+    public SpecimenEntity getByUuid(String uuid) {
+        var critera =  Criteria.where("uuid").is(uuid).and("_active").is(true);
         return mongoTemplate.findOne(new Query(critera), SpecimenEntity.class);
     }
     
-    public List<SpecimenEntity> search(String patientId, String encounterId, Integer offset, Integer count) {
+    public SpecimenEntity save(SpecimenEntity specimenEntity) {
+        return specimenRepository.save(specimenEntity);
+    }
+    
+    public List<SpecimenEntity> search(String patientId, Integer offset, Integer count) {
         var critera =  Criteria.where("_active").is(true);
                             
         if(!StringUtils.isEmpty(patientId)) {
             critera.and("patient.reference").is(ResourceType.Patient + "/" + patientId);
-        }
-        
-        if(!StringUtils.isEmpty(encounterId)) {
-            critera.and("encounter.reference").is(ResourceType.Encounter + "/" + encounterId);
         }
         
         var query = new Query(critera);

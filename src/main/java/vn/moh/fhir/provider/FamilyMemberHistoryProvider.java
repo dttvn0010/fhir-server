@@ -34,7 +34,7 @@ public class FamilyMemberHistoryProvider  implements IResourceProvider  {
     
     @Read
     public Resource read(@IdParam IdType idType) {
-        var familiMemberHistoryEntity = familyMemberHistoryService.getById(idType.getIdPart());
+        var familiMemberHistoryEntity = familyMemberHistoryService.getByUuid(idType.getIdPart());
         if(familiMemberHistoryEntity == null) {
             FhirUtils.createOperationOutcome("No FamilyMemberHistory with \"" + idType.getIdPart() + "\" found");
         }

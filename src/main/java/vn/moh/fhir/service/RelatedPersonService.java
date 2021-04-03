@@ -17,8 +17,8 @@ public class RelatedPersonService {
 
     @Autowired private MongoTemplate mongoTemplate;
 
-    public RelatedPersonEntity getById(String id) {
-        var critera =  Criteria.where("id").is(id).and("_active").is(true);
+    public RelatedPersonEntity getByUuid(String uuid) {
+        var critera =  Criteria.where("uuid").is(uuid).and("_active").is(true);
         return mongoTemplate.findOne(new Query(critera), RelatedPersonEntity.class);
     }
     

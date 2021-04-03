@@ -14,6 +14,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import org.hl7.fhir.r4.model.Practitioner;
+import org.hl7.fhir.r4.model.ResourceType;
 
 import vn.moh.fhir.model.base.AddressModel;
 import vn.moh.fhir.model.base.AttachmentModel;
@@ -26,7 +27,7 @@ import vn.moh.fhir.utils.DataUtils;
 
 @JsonInclude(Include.NON_NULL)
 @Document(collection = "practitioner")
-@CompoundIndex(def = "{'id':1, '_active':1, '_version':1}", name = "index_by_default")
+@CompoundIndex(def = "{'uuid':1, '_active':1, '_version':1}", name = "index_by_default")
 public class PractitionerEntity {
 
     public static class PractitionerQualification {
@@ -45,6 +46,10 @@ public class PractitionerEntity {
             }
             return qualification;
         }    
+        
+        public PractitionerQualification() {
+            
+        }
         
         public PractitionerQualification(Practitioner.PractitionerQualificationComponent qualification) {
             if(qualification != null) {
@@ -66,8 +71,8 @@ public class PractitionerEntity {
         }
     }
     
-    @Id public ObjectId _id;
-    String id;
+    @Id public ObjectId id;
+    String uuid;
     int _version;
     boolean _active;
     
@@ -84,7 +89,7 @@ public class PractitionerEntity {
     public Practitioner toFhir() {
         var practitioner = new Practitioner();
         
-        practitioner.setId(id);
+        practitioner.setId(uuid);
         
         if(active !=  null) {
             practitioner.setActive(active);
@@ -111,9 +116,17 @@ public class PractitionerEntity {
         return practitioner;
     }
     
+    public PractitionerEntity() {
+        
+    }
+    
     public PractitionerEntity(Practitioner practitioner) {
         if(practitioner != null) {
-            this.id = practitioner.getId();
+            this.uuid = practitioner.getId();
+            
+            if(this.uuid != null && this.uuid.startsWith(ResourceType.Practitioner + "/")) {
+                this.uuid = this.uuid.replace(ResourceType.Practitioner + "/", "");
+            }
             
             if(practitioner.hasActive()) {
                 this.active = practitioner.getActive();
@@ -144,5 +157,17 @@ public class PractitionerEntity {
             return new PractitionerEntity(practitioner);
         }
         return null;
+    }
+    
+    public int get_Version() {
+        return _version;
+    }
+    
+    public void set_Version(int _version) {
+        this._version = _version;
+    }
+    
+    public void set_Active(boolean _active) {
+        this._active = _active;
     }
 }

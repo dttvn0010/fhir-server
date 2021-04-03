@@ -18,6 +18,10 @@ public class HumanNameModel {
         return name;
     }
     
+    public HumanNameModel() {
+        
+    }
+    
     public HumanNameModel(HumanName name) {
         if(name != null) {
             this.text = name.getText();

@@ -10,15 +10,26 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import vn.moh.fhir.model.entity.PatientEntity;
+import vn.moh.fhir.repository.PatientRepository;
 
 @Service
 public class PatientService {
 
+    @Autowired private PatientRepository patientRepository; 
     @Autowired private MongoTemplate mongoTemplate;
 
-    public PatientEntity getById(String id) {
-        var critera =  Criteria.where("id").is(id).and("_active").is(true);
+    public PatientEntity getByUuid(String uuid) {
+        var critera =  Criteria.where("uuid").is(uuid).and("_active").is(true);
         return mongoTemplate.findOne(new Query(critera), PatientEntity.class);
+    }
+    
+    public PatientEntity getByUuidAndVersion(String uuid, int _version) {
+        var critera =  Criteria.where("uuid").is(uuid).and("_version").is(_version);
+        return mongoTemplate.findOne(new Query(critera), PatientEntity.class);
+    }
+    
+    public PatientEntity save(PatientEntity patient) {
+        return patientRepository.save(patient);
     }
     
     public List<PatientEntity> search(String name, Integer offset, Integer count) {

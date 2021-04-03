@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.hl7.fhir.r4.model.Medication;
+import org.hl7.fhir.r4.model.ResourceType;
 import org.hl7.fhir.r4.model.Medication.MedicationStatus;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
@@ -22,7 +23,7 @@ import vn.moh.fhir.utils.DataUtils;
 
 @JsonInclude(Include.NON_NULL)
 @Document(collection = "medication")
-@CompoundIndex(def = "{'id':1, '_active':1, '_version':1}", name = "index_by_default")
+@CompoundIndex(def = "{'uuid':1, '_active':1, '_version':1}", name = "index_by_default")
 public class MedicationEntity {
 
     public static class MedicationBatch {
@@ -34,6 +35,10 @@ public class MedicationEntity {
             batch.setExpirationDate(expirationDate);
             batch.setLotNumber(lotNumber);
             return batch;
+        }
+        
+        public MedicationBatch() {
+            
         }
         
         public MedicationBatch(Medication.MedicationBatchComponent batch) {
@@ -74,6 +79,10 @@ public class MedicationEntity {
             return ingredient;
         }
         
+        public MedicationIngredient() {
+            
+        }
+        
         public MedicationIngredient(Medication.MedicationIngredientComponent ingredient) {
             if(ingredient != null) {
                 if(ingredient.hasItemCodeableConcept()) {
@@ -98,8 +107,8 @@ public class MedicationEntity {
         }
     }
     
-    @Id public ObjectId _id;
-    String id;
+    @Id public ObjectId id;
+    String uuid;
     int _version;
     boolean _active;
     
@@ -115,7 +124,7 @@ public class MedicationEntity {
     public Medication toFhir() {
         var medication = new Medication();
         
-        medication.setId(id);
+        medication.setId(uuid);
         medication.setIdentifier(DataUtils.transform(identifier, IdentifierModel::toFhir));
         
         if(code != null) {
@@ -147,9 +156,19 @@ public class MedicationEntity {
         return medication;
     }
     
+    public MedicationEntity() {
+        
+    }
+    
     public MedicationEntity(Medication medication) {
         if(medication !=  null) {
-            this.id = medication.getId();
+            this.uuid = medication.getId();
+            
+            if(this.uuid != null && this.uuid.startsWith(ResourceType.Medication + "/")) {
+                this.uuid = this.uuid.replace(ResourceType.Medication + "/", "");
+            }
+            
+            
             this.identifier = DataUtils.transform(medication.getIdentifier(), IdentifierModel::fromFhir);
             
             if(medication.hasCode()) {
@@ -185,5 +204,17 @@ public class MedicationEntity {
             return new MedicationEntity(medication);
         }
         return null;
+    }
+    
+    public int get_Version() {
+        return _version;
+    }
+    
+    public void set_Version(int _version) {
+        this._version = _version;
+    }
+    
+    public void set_Active(boolean _active) {
+        this._active = _active;
     }
 }

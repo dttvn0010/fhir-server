@@ -23,9 +23,11 @@ import org.hl7.fhir.r4.model.Period;
 import org.hl7.fhir.r4.model.Quantity;
 import org.hl7.fhir.r4.model.Range;
 import org.hl7.fhir.r4.model.Ratio;
+import org.hl7.fhir.r4.model.ResourceType;
 import org.hl7.fhir.r4.model.StringType;
 import org.hl7.fhir.r4.model.Type;
 
+import vn.moh.fhir.model.base.AnnotationModel;
 import vn.moh.fhir.model.base.CodeableConceptModel;
 import vn.moh.fhir.model.base.IdentifierModel;
 import vn.moh.fhir.model.base.PeriodModel;
@@ -37,7 +39,7 @@ import vn.moh.fhir.utils.DataUtils;
 
 @JsonInclude(Include.NON_NULL)
 @Document(collection = "observation")
-@CompoundIndex(def = "{'id':1, '_active':1, '_version':1, 'patient.reference':1, 'encounter.reference':1}", name = "index_by_default")
+@CompoundIndex(def = "{'uuid':1, '_active':1, '_version':1, 'patient.reference':1, 'encounter.reference':1}", name = "index_by_default")
 public class ObservationEntity {
     
     public static class ObservationValueType {
@@ -93,6 +95,10 @@ public class ObservationEntity {
                 return new BooleanType(valueBoolean);                
             }
             return null;
+        }
+        
+        public ObservationValue() {
+            
         }
         
         public ObservationValue(Type value) {
@@ -178,6 +184,10 @@ public class ObservationEntity {
             return range;
         }
         
+        public ObservationReferenceRange() {
+            
+        }
+        
         public ObservationReferenceRange(Observation.ObservationReferenceRangeComponent range) {
             if(range != null) {
                 if(range.hasLow()) {
@@ -241,6 +251,10 @@ public class ObservationEntity {
             return comp;
         }
         
+        public ObservationComponent() {
+            
+        }
+        
         public ObservationComponent(Observation.ObservationComponentComponent comp) {
             if(comp != null) {
                 if(comp.hasCode()) {
@@ -270,8 +284,8 @@ public class ObservationEntity {
         }
     }
     
-    @Id public ObjectId _id;
-    String id;
+    @Id public ObjectId id;
+    String uuid;
     int _version;
     boolean _active;
     
@@ -288,11 +302,14 @@ public class ObservationEntity {
     Date issue;
     List<ReferenceModel> performer;
     ObservationValue value;    
+    List<AnnotationModel> note;
+    List<ObservationReferenceRange> referenceRange;
+    List<ObservationComponent> component;
     
     public Observation toFhir() {
         var obs = new Observation();
         
-        obs.setId(id);
+        obs.setId(uuid);
         obs.setIdentifier(DataUtils.transform(identifier, IdentifierModel::toFhir));        
         obs.setBasedOn(DataUtils.transform(basedOn, ReferenceModel::toFhir));
         obs.setPartOf(DataUtils.transform(partOf, ReferenceModel::toFhir));
@@ -331,13 +348,27 @@ public class ObservationEntity {
             obs.setValue(value.toFhir());
         }
         
+        obs.setNote(DataUtils.transform(note, AnnotationModel::toFhir));
+        obs.setReferenceRange(DataUtils.transform(referenceRange, ObservationReferenceRange::toFhir));
+        obs.setComponent(DataUtils.transform(component, ObservationComponent::toFhir));
+        
         return obs;
+    }
+    
+    public ObservationEntity() {
+        
     }
     
     public ObservationEntity(Observation obs) {
         if(obs != null) {
             
-            this.id = obs.getId();
+            this.uuid = obs.getId();
+            
+            if(this.uuid != null && this.uuid.startsWith(ResourceType.Observation + "/")) {
+                this.uuid = this.uuid.replace(ResourceType.Observation + "/", "");
+            }
+            
+            
             this.identifier = DataUtils.transform(obs.getIdentifier(), IdentifierModel::fromFhir);
             this.basedOn = DataUtils.transform(obs.getBasedOn(), ReferenceModel::fromFhir);
             this.partOf = DataUtils.transform(obs.getPartOf(), ReferenceModel::fromFhir);
@@ -352,6 +383,12 @@ public class ObservationEntity {
             
             if(obs.hasEncounter()) {
                 this.encounter = ReferenceModel.fromFhir(obs.getEncounter());
+            }
+            
+            this.category = DataUtils.transform(obs.getCategory(), CodeableConceptModel::fromFhir);
+            
+            if(obs.hasCode()) {
+                this.code = CodeableConceptModel.fromFhir(obs.getCode());
             }
             
             if(obs.hasEffectiveDateTimeType()) {
@@ -373,6 +410,10 @@ public class ObservationEntity {
             if(obs.hasValue()) {
                 this.value = ObservationValue.fromFhir(obs.getValue());
             }
+            
+            this.note = DataUtils.transform(obs.getNote(), AnnotationModel::fromFhir);
+            this.referenceRange = DataUtils.transform(obs.getReferenceRange(), ObservationReferenceRange::fromFhir);
+            this.component = DataUtils.transform(obs.getComponent(), ObservationComponent::fromFhir);
         }
     }
     
@@ -383,4 +424,16 @@ public class ObservationEntity {
         
         return null;
     }    
+    
+    public int get_Version() {
+        return _version;
+    }
+    
+    public void set_Version(int _version) {
+        this._version = _version;
+    }
+    
+    public void set_Active(boolean _active) {
+        this._active = _active;
+    }
 }

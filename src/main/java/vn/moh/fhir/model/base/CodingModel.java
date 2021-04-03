@@ -21,6 +21,10 @@ public class CodingModel {
         return coding;
     }
     
+    public CodingModel() {
+        
+    }
+    
     public CodingModel(Coding coding) {
         if(coding != null) {
             this.system = coding.getSystem();

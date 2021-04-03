@@ -1,0 +1,49 @@
+{
+  "resourceType": "ServiceRequest",
+  "status": "completed",
+  "intent": "order",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://fhir.moh.vn/CodeSystem/Procedure-Category",
+          "code": "03",
+          "display": "Chẩn đoán hình ảnh"
+        }
+      ],
+      "text": "Chẩn đoán hình ảnh"
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://fhir.moh.vn/CodeSystem/Procedure",
+        "code": "01",
+        "display": "Nội soi ổ bụng"
+      }
+    ],
+    "text": "Nội soi ổ bụng"
+  },
+  "subject": {
+    "reference": "Patient/9da9b4c7-aeae-402d-85e0-9c5d7c56df8e"
+  },
+  "encounter": {
+    "reference": "Encounter/4ea4bf36-b1ba-45b5-be82-0a89286ab4ed"
+  },
+  "authoredOn": "2020-05-10T11:30:00",
+  "requester": {
+    "identifier": {
+      "type": {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+            "code": "MD"
+          }
+        ],
+        "text": "Mã định danh bác sỹ"
+      },
+      "value": "112321"
+    },
+    "display": "BS Chỉ Định"
+  }
+}

@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.hl7.fhir.r4.model.Immunization;
+import org.hl7.fhir.r4.model.ResourceType;
 import org.hl7.fhir.r4.model.Immunization.ImmunizationStatus;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
@@ -26,7 +27,7 @@ import vn.moh.fhir.utils.DateUtils;
 
 @JsonInclude(Include.NON_NULL)
 @Document(collection = "immunization")
-@CompoundIndex(def = "{'id':1, '_active':1, '_version':1, 'patient.reference':1, 'encounter.reference':1}", name = "index_by_default")
+@CompoundIndex(def = "{'uuid':1, '_active':1, '_version':1, 'patient.reference':1, 'encounter.reference':1}", name = "index_by_default")
 public class ImmunizationEntity {
 
     public static class ImmunizationPerformer {
@@ -43,6 +44,10 @@ public class ImmunizationEntity {
                 performer.setActor(actor.toFhir());
             }
             return performer;
+        }
+        
+        public ImmunizationPerformer() {
+            
         }
         
         public ImmunizationPerformer(Immunization.ImmunizationPerformerComponent performer) {
@@ -81,6 +86,10 @@ public class ImmunizationEntity {
                 reaction.setReported(reported);
             }
             return reaction;
+        }
+        
+        public ImmunizationReaction() {
+            
         }
         
         public ImmunizationReaction(Immunization.ImmunizationReactionComponent reaction) {
@@ -134,6 +143,10 @@ public class ImmunizationEntity {
             return protocol;
         }
         
+        public ImmunizationProtocolApplied() {
+            
+        }
+        
         public ImmunizationProtocolApplied(Immunization.ImmunizationProtocolAppliedComponent protocol) {
             if(protocol != null) {
                 this.series = protocol.getSeries();
@@ -169,8 +182,8 @@ public class ImmunizationEntity {
         }
     }
     
-    @Id public ObjectId _id;
-    String id;
+    @Id public ObjectId id;
+    String uuid;
     int _version;
     boolean _active;
         
@@ -196,7 +209,7 @@ public class ImmunizationEntity {
     public Immunization toFhir() {
         var immunization = new Immunization();
         
-        immunization.setId(id);
+        immunization.setId(uuid);
         immunization.setIdentifier(DataUtils.transform(identifier, IdentifierModel::toFhir));
         
         if(!StringUtils.isEmpty(status)) {
@@ -253,9 +266,18 @@ public class ImmunizationEntity {
         return immunization;
     }
     
+    public ImmunizationEntity() {
+        
+    }
+    
     public ImmunizationEntity(Immunization immunization) {
         if(immunization != null) {
-            this.id = immunization.getId();
+            this.uuid = immunization.getId();
+            
+            if(this.uuid != null && this.uuid.startsWith(ResourceType.Immunization + "/")) {
+                this.uuid = this.uuid.replace(ResourceType.Immunization + "/", "");
+            }
+            
             this.identifier = DataUtils.transform(immunization.getIdentifier(), IdentifierModel::fromFhir);
             
             if(immunization.hasStatus()) {
@@ -320,5 +342,17 @@ public class ImmunizationEntity {
             return new ImmunizationEntity(immunization);
         }
         return null;
+    }
+    
+    public int get_Version() {
+        return _version;
+    }
+    
+    public void set_Version(int _version) {
+        this._version = _version;
+    }
+    
+    public void set_Active(boolean _active) {
+        this._active = _active;
     }
 }

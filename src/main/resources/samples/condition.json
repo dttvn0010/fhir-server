@@ -1,0 +1,15 @@
+{
+    "resourceType": "Condition",
+    "code": {
+      "coding": [
+        {
+          "system": "http://hl7.org/fhir/sid/icd-10",
+          "code": "A15.1",
+          "display": "Lao phổi, chỉ xác nhận bằng nuôi cấy"
+        }
+      ]
+    },
+    "subject": {
+      "reference": "Patient/9da9b4c7-aeae-402d-85e0-9c5d7c56df8e"
+    }
+}

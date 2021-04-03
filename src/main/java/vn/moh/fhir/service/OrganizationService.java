@@ -15,8 +15,8 @@ import vn.moh.fhir.model.entity.OrganizationEntity;
 public class OrganizationService {
     @Autowired private MongoTemplate mongoTemplate;
 
-    public OrganizationEntity getById(String id) {
-        var critera =  Criteria.where("id").is(id).and("_active").is(true);
+    public OrganizationEntity getByUuid(String uuid) {
+        var critera =  Criteria.where("uuid").is(uuid).and("_active").is(true);
         return mongoTemplate.findOne(new Query(critera), OrganizationEntity.class);
     }
     

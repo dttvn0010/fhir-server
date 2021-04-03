@@ -14,22 +14,39 @@ public class QuantityModel {
     
     public Quantity toFhir() {
         var quantity = new Quantity();
+        
         if(value != null) {
             quantity.setValue(value);
         }
+        
+        quantity.setUnit(unit);
+        
         if(!StringUtils.isEmpty(comparator)) {
             quantity.setComparator(QuantityComparator.fromCode(comparator));
         }
+        
         quantity.setSystem(system);
         quantity.setCode(code);
         return quantity;
     }
     
+    public QuantityModel() {
+        
+    }
+    
+    public QuantityModel(double value, String unit) {
+        this.value = value;
+        this.unit = unit;
+    }
+    
     public QuantityModel(Quantity quantity) {
         if(quantity != null) {
+            
             if(quantity.hasValue()) {
                 this.value = quantity.getValue().doubleValue();
             }
+            
+            this.unit = quantity.getUnit();
             
             if(quantity.hasComparator()) {
                 this.comparator = quantity.getComparator().toCode();

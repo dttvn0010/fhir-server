@@ -17,8 +17,8 @@ public class FamilyMemberHistoryService {
 
     @Autowired private MongoTemplate mongoTemplate;
 
-    public FamilyMemberHistoryEntity getById(String id) {
-        var critera =  Criteria.where("id").is(id).and("_active").is(true);
+    public FamilyMemberHistoryEntity getByUuid(String uuid) {
+        var critera =  Criteria.where("uuid").is(uuid).and("_active").is(true);
         return mongoTemplate.findOne(new Query(critera), FamilyMemberHistoryEntity.class);
     }
     

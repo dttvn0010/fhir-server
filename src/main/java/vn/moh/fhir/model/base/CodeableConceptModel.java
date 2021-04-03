@@ -29,6 +29,10 @@ public class CodeableConceptModel {
         this.text = text;
     }
     
+    public CodeableConceptModel() {
+        
+    }
+    
     public CodeableConceptModel(CodeableConcept codeableConcept) {
         if(codeableConcept != null) {
             this.text = codeableConcept.getText();

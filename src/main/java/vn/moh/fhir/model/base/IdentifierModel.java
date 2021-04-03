@@ -43,6 +43,10 @@ public class IdentifierModel {
         return identifier;
     }
     
+    public IdentifierModel() {
+        
+    }
+    
     public IdentifierModel(Identifier identifier) {
         if(identifier != null) {
             this.system = identifier.getSystem();

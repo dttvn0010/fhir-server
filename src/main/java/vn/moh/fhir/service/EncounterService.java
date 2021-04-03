@@ -11,15 +11,26 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import vn.moh.fhir.model.entity.EncounterEntity;
+import vn.moh.fhir.repository.EncounterRepository;
 
 @Service
 public class EncounterService {
 
+    @Autowired private EncounterRepository encounterRepository;
     @Autowired private MongoTemplate mongoTemplate;
 
-    public EncounterEntity getById(String id) {
-        var critera =  Criteria.where("id").is(id).and("_active").is(true);
+    public EncounterEntity getByUuid(String uuid) {
+        var critera =  Criteria.where("uuid").is(uuid).and("_active").is(true);
         return mongoTemplate.findOne(new Query(critera), EncounterEntity.class);
+    }
+    
+    public EncounterEntity getByUuidAndVersion(String uuid, int _version) {
+        var critera =  Criteria.where("uuid").is(uuid).and("_version").is(_version);
+        return mongoTemplate.findOne(new Query(critera), EncounterEntity.class);
+    }
+    
+    public EncounterEntity save(EncounterEntity encounterEntity) {
+        return encounterRepository.save(encounterEntity);
     }
     
     public List<EncounterEntity> search(String patientId, Integer offset, Integer count) {

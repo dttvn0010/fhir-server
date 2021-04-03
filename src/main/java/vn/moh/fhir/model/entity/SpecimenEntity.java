@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.hl7.fhir.r4.model.DateTimeType;
+import org.hl7.fhir.r4.model.ResourceType;
 import org.hl7.fhir.r4.model.Specimen;
 import org.hl7.fhir.r4.model.Specimen.SpecimenStatus;
 import org.springframework.data.annotation.Id;
@@ -24,7 +25,7 @@ import vn.moh.fhir.utils.DataUtils;
 
 @JsonInclude(Include.NON_NULL)
 @Document(collection = "specimen")
-@CompoundIndex(def = "{'id':1, '_active':1, '_version':1, 'patient.reference':1, 'encounter.reference':1}", name = "index_by_default")
+@CompoundIndex(def = "{'uuid':1, '_active':1, '_version':1, 'patient.reference':1}", name = "index_by_default")
 public class SpecimenEntity {
     
      public static class SpecimenCollection {
@@ -58,6 +59,10 @@ public class SpecimenEntity {
              }
              
              return collection;
+         }
+         
+         public SpecimenCollection() {
+             
          }
          
          public SpecimenCollection(Specimen.SpecimenCollectionComponent collection) {
@@ -97,8 +102,8 @@ public class SpecimenEntity {
          }
      }
 
-     @Id public ObjectId _id;
-     String id;
+     @Id public ObjectId id;
+     String uuid;
      int _version;
      boolean _active;
         
@@ -116,7 +121,7 @@ public class SpecimenEntity {
     public Specimen toFhir() {
         var specimen = new Specimen();
         
-        specimen.setId(id);
+        specimen.setId(uuid);
         specimen.setIdentifier(DataUtils.transform(identifier, IdentifierModel::toFhir));
         
         if(!StringUtils.isEmpty(status)) {
@@ -145,10 +150,18 @@ public class SpecimenEntity {
         return specimen;
     }
     
+    public SpecimenEntity() {
+        
+    }
     
     public SpecimenEntity(Specimen specimen) {
         if(specimen != null) {
-            this.id = specimen.getId();
+            this.uuid = specimen.getId();
+            
+            if(this.uuid != null && this.uuid.startsWith(ResourceType.Specimen + "/")) {
+                this.uuid = this.uuid.replace(ResourceType.Specimen + "/", "");
+            }
+            
             this.identifier = DataUtils.transform(specimen.getIdentifier(), IdentifierModel::fromFhir);
             
             if(specimen.hasStatus()) {
@@ -182,5 +195,17 @@ public class SpecimenEntity {
         }
         
         return null;
+    }
+    
+    public int get_Version() {
+        return _version;
+    }
+    
+    public void set_Version(int _version) {
+        this._version = _version;
+    }
+    
+    public void set_Active(boolean _active) {
+        this._active = _active;
     }
 }

@@ -20,6 +20,10 @@ public class AnnotationModel {
         return ann;
     }
     
+    public AnnotationModel() {
+        
+    }
+    
     public AnnotationModel(Annotation ann) {
         if(ann != null) {
             if(ann.hasAuthorReference()) {

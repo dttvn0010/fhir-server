@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.bson.types.ObjectId;
 import org.hl7.fhir.r4.model.Organization;
+import org.hl7.fhir.r4.model.ResourceType;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -19,10 +20,10 @@ import vn.moh.fhir.utils.DataUtils;
 
 @JsonInclude(Include.NON_NULL)
 @Document(collection = "organization")
-@CompoundIndex(def = "{'id':1, '_active':1, '_version':1}", name = "index_by_default")
+@CompoundIndex(def = "{'uuid':1, '_active':1, '_version':1}", name = "index_by_default")
 public class OrganizationEntity {
-    @Id public ObjectId _id;
-    String id;
+    @Id public ObjectId id;
+    String uuid;
     int _version;
     boolean _active;
     
@@ -36,7 +37,7 @@ public class OrganizationEntity {
     public Organization toFhir() {
         var org = new Organization();
         
-        org.setId(id);
+        org.setId(uuid);
         
         if(active != null) {
             org.setActive(active);
@@ -58,10 +59,18 @@ public class OrganizationEntity {
         return org;
     }
     
+    public OrganizationEntity() {
+        
+    }
+    
     public OrganizationEntity(Organization org) {
         if(org != null) {
             
-            this.id = org.getId();
+            this.uuid = org.getId();
+            
+            if(this.uuid != null && this.uuid.startsWith(ResourceType.Organization + "/")) {
+                this.uuid = this.uuid.replace(ResourceType.Organization + "/", "");
+            }
             
             if(org.hasActive()) {
                 this.active = org.getActive();
@@ -85,5 +94,17 @@ public class OrganizationEntity {
             return new OrganizationEntity(org);
         }
         return null;
+    }
+    
+    public int get_Version() {
+        return _version;
+    }
+    
+    public void set_Version(int _version) {
+        this._version = _version;
+    }
+    
+    public void set_Active(boolean _active) {
+        this._active = _active;
     }
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.hl7.fhir.r4.model.DateTimeType;
+import org.hl7.fhir.r4.model.ResourceType;
 import org.hl7.fhir.r4.model.ServiceRequest;
 import org.hl7.fhir.r4.model.ServiceRequest.ServiceRequestIntent;
 import org.hl7.fhir.r4.model.ServiceRequest.ServiceRequestPriority;
@@ -26,11 +27,11 @@ import vn.moh.fhir.utils.DataUtils;
 
 @JsonInclude(Include.NON_NULL)
 @Document(collection = "service_request")
-@CompoundIndex(def = "{'id':1, '_active':1, '_version':1, 'patient.reference':1, 'encounter.reference':1}", name = "index_by_default")
+@CompoundIndex(def = "{'uuid':1, '_active':1, '_version':1, 'patient.reference':1, 'encounter.reference':1}", name = "index_by_default")
 public class ServiceRequestEntity {
 
-    @Id public ObjectId _id;
-    String id;
+    @Id public ObjectId id;
+    String uuid;
     int _version;
     boolean _active;
     
@@ -59,7 +60,7 @@ public class ServiceRequestEntity {
     public ServiceRequest toFhir() {
         var serviceRequest = new ServiceRequest();
         
-        serviceRequest.setId(id);
+        serviceRequest.setId(uuid);
         serviceRequest.setIdentifier(DataUtils.transform(identifier, IdentifierModel::toFhir));
         serviceRequest.setBasedOn(DataUtils.transform(basedOn, ReferenceModel::toFhir));
         
@@ -127,9 +128,18 @@ public class ServiceRequestEntity {
         return serviceRequest;
     }
     
+    public ServiceRequestEntity() {
+        
+    }
+    
     public ServiceRequestEntity(ServiceRequest serviceRequest) {
         if(serviceRequest != null) {
-            this.id = serviceRequest.getId();
+            this.uuid = serviceRequest.getId();
+            
+            if(this.uuid != null && this.uuid.startsWith(ResourceType.ServiceRequest + "/")) {
+                this.uuid = this.uuid.replace(ResourceType.ServiceRequest + "/", "");
+            }
+            
             this.identifier = DataUtils.transform(serviceRequest.getIdentifier(), IdentifierModel::fromFhir);
             this.basedOn = DataUtils.transform(serviceRequest.getBasedOn(), ReferenceModel::fromFhir);
             
@@ -200,5 +210,17 @@ public class ServiceRequestEntity {
             return new ServiceRequestEntity(serviceRequest);
         }
         return null;
+    }
+    
+    public int get_Version() {
+        return _version;
+    }
+    
+    public void set_Version(int _version) {
+        this._version = _version;
+    }
+    
+    public void set_Active(boolean _active) {
+        this._active = _active;
     }
 }

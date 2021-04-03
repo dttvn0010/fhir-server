@@ -20,6 +20,10 @@ public class ReferenceModel {
         return ref;
     }
     
+    public ReferenceModel() {
+        
+    }
+    
     public ReferenceModel(Reference ref) {
         if(ref != null) {
             this.reference = ref.getReference();

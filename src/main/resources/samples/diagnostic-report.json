@@ -1,0 +1,52 @@
+{
+  "resourceType": "DiagnosticReport",
+  "id": "150450d8-b5a6-410d-95f5-4a25d6dab51b",
+  "basedOn": [
+    {
+      "reference": "ServiceRequest/9f6edc7b-9139-4a2d-936b-b0507f44afd5"
+    }
+  ],
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://fhir.moh.vn/CodeSystem/Procedure-Category",
+          "code": "03",
+          "display": "Chẩn đoán hình ảnh"
+        }
+      ],
+      "text": "Chẩn đoán hình ảnh"
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://fhir.moh.vn/CodeSystem/Procedure",
+        "code": "01",
+        "display": "Nội soi ổ bụng"
+      }
+    ],
+    "text": "Nội soi ổ bụng"
+  },
+  "subject": {
+    "reference": "Patient/9da9b4c7-aeae-402d-85e0-9c5d7c56df8e"
+  },
+  "encounter": {
+    "reference": "Encounter/4ea4bf36-b1ba-45b5-be82-0a89286ab4ed"
+  },
+  "issued": "2020-04-15T10:05:00+07:00",
+  "result": [
+    {
+      "reference": "Observation/8919fe9e-425a-4122-b42e-fa991d8bc47d"
+    }
+  ],
+  "media": [
+    {
+      "link": {
+        "reference": "Media/16a6f920-2df7-4605-98f6-5cf2e7680cc5"
+      }
+    }
+  ],
+  "conclusion": "Kết luận"
+}

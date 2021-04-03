@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.hl7.fhir.r4.model.Encounter;
+import org.hl7.fhir.r4.model.ResourceType;
 import org.hl7.fhir.r4.model.Encounter.EncounterLocationStatus;
 import org.hl7.fhir.r4.model.Encounter.EncounterStatus;
 import org.springframework.data.annotation.Id;
@@ -23,7 +24,7 @@ import vn.moh.fhir.utils.DataUtils;
 
 @JsonInclude(Include.NON_NULL)
 @Document(collection = "encounter")
-@CompoundIndex(def = "{'id':1, '_active':1, '_version':1, 'patient.reference':1}", name = "index_by_default")
+@CompoundIndex(def = "{'uuid':1, '_active':1, '_version':1, 'patient.reference':1}", name = "index_by_default")
 public class EncounterEntity {
 
     public static class EncounterLocation {
@@ -43,6 +44,10 @@ public class EncounterEntity {
                 encLoc.setPeriod(period.toFhir());
             }
             return encLoc;
+        }
+        
+        public EncounterLocation() {
+            
         }
         
         public EncounterLocation(Encounter.EncounterLocationComponent encLoc) {
@@ -84,6 +89,10 @@ public class EncounterEntity {
             return encParticipant;
         }
         
+        public EncounterParticipant() {
+            
+        }
+        
         public EncounterParticipant(Encounter.EncounterParticipantComponent encParticipant) {
             if(encParticipant != null) {
                 this.type = DataUtils.transform(encParticipant.getType(), CodeableConceptModel::fromFhir);
@@ -121,6 +130,10 @@ public class EncounterEntity {
                 encDiagnosis.setRank(rank);
             }
             return encDiagnosis;
+        }
+        
+        public EncounterDiagnosis() {
+            
         }
         
         public EncounterDiagnosis(Encounter.DiagnosisComponent encDiagnosis) {
@@ -173,6 +186,10 @@ public class EncounterEntity {
             return hospitalization;
         }
         
+        public Hospitalization() {
+            
+        }
+        
         public Hospitalization(Encounter.EncounterHospitalizationComponent hospitalization) {
             if(hospitalization != null) {
                 if(hospitalization.hasOrigin()) {
@@ -201,8 +218,8 @@ public class EncounterEntity {
         }
     }
     
-    @Id public ObjectId _id;
-    String id;
+    @Id public ObjectId id;
+    String uuid;
     int _version;
     boolean _active;
     
@@ -222,7 +239,7 @@ public class EncounterEntity {
     public Encounter toFhir() {
         var encounter = new Encounter();
         
-        encounter.setId(id);
+        encounter.setId(uuid);
         encounter.setIdentifier(DataUtils.transform(identifier, IdentifierModel::toFhir));
         if(!StringUtils.isEmpty(status)) {
             encounter.setStatus(EncounterStatus.fromCode(status));
@@ -256,9 +273,18 @@ public class EncounterEntity {
         return encounter;
     }
     
+    public EncounterEntity() {
+        
+    }
+    
     public EncounterEntity(Encounter encounter) {
         if(encounter != null) {
-            this.id = encounter.getId();
+            this.uuid = encounter.getId();
+            
+            if(this.uuid != null && this.uuid.startsWith(ResourceType.Encounter + "/")) {
+                this.uuid = this.uuid.replace(ResourceType.Encounter + "/", "");
+            }
+            
             this.identifier = DataUtils.transform(encounter.getIdentifier(), IdentifierModel::fromFhir);
             
             if(encounter.hasStatus()) {
@@ -299,5 +325,17 @@ public class EncounterEntity {
             return new EncounterEntity(encounter);
         }
         return null;
+    }
+    
+    public int get_Version() {
+        return _version;
+    }
+    
+    public void set_Version(int _version) {
+        this._version = _version;
+    }
+    
+    public void set_Active(boolean _active) {
+        this._active = _active;
     }
  }

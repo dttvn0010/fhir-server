@@ -1,0 +1,141 @@
+{  
+  "class": {
+    "code": "AMB",
+    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+    "display": "Bệnh ngoại trú"
+  },
+  "period": {
+    "end": "2021-01-25T08:15:41",
+    "start": "2021-01-25T08:12:17"
+  },
+  "status": "finished",
+  "subject": {
+    "identifier": {
+      "type": {
+        "text": "Số thẻ bảo hiểm xã hội",
+        "coding": [
+          {
+            "code": "MC",
+            "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+            "display": "Medicare number"
+          }
+        ]
+      },
+      "value": "TEL100101101"
+    }
+  },
+  "location": [
+    {
+      "period": {
+        "end": "2021-01-25T08:15:41",
+        "start": "2021-01-25T08:12:18"
+      },
+      "location": {
+        "display": "Khoa Khám bệnh"
+      }
+    }
+  ],
+  "diagnosis": [
+    {
+      "use": {
+        "text": "Chẩn đoán ra viện",
+        "coding": [
+          {
+            "code": "DD",
+            "system": "http://terminology.hl7.org/CodeSystem/diagnosis-role",
+            "display": "Discharge diagnosis"
+          }
+        ]
+      },
+      "condition": {
+        "reference": "Condition/70be4df6-35e9-4062-955a-014d186750d2"
+      }
+    }
+  ],
+  "identifier": [
+    {
+      "type": {
+        "text": "Số hồ sơ bệnh án",
+        "coding": [
+          {
+            "code": "MR",
+            "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+            "display": "Medical record number"
+          }
+        ]
+      },
+      "value": "19700003"
+    }
+  ],
+  "participant": [
+    {
+      "type": [
+        {
+          "text": "Bác sĩ điều trị",
+          "coding": [
+            {
+              "code": "ATND",
+              "system": "http://terminology.hl7.org/CodeSystem/v3-ParticipationType",
+              "display": "attender"
+            }
+          ]
+        }
+      ],
+      "individual": {
+        "display": "Bs.Nguyễn Thị Thủy",
+        "identifier": {
+          "type": {
+            "text": "Mã định danh bác sĩ",
+            "coding": [
+              {
+                "code": "MD",
+                "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                "display": "Mã định danh bác sĩ"
+              }
+            ]
+          },
+          "value": "1212321312"
+        }
+      }
+    }
+  ],
+  "resourceType": "Encounter",
+  "hospitalization": {
+    "admitSource": {
+      "text": "Cơ quan y tế",
+      "coding": [
+        {
+          "code": "hosp-trans",
+          "system": "http://terminology.hl7.org/CodeSystem/admit-source",
+          "display": "Transferred from other hospital"
+        }
+      ]
+    },
+    "destination": {
+      "display": "Bệnh viện Tim mạch thành phố Cần Thơ",
+      "identifier": {
+        "type": {
+          "text": "Định danh tổ chức",
+          "coding": [
+            {
+              "code": "XX",
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+              "display": "Organization identifier"
+            }
+          ]
+        },
+        "value": "92001"
+      }
+    },
+    "dischargeDisposition": {
+      "text": "Khác",
+      "coding": [
+        {
+          "code": "other",
+          "system": "http://terminology.hl7.org/CodeSystem/admit-source",
+          "display": "Other"
+        }
+      ]
+    }
+  }
+}

@@ -8,6 +8,7 @@ import org.bson.types.ObjectId;
 import org.hl7.fhir.r4.model.BooleanType;
 import org.hl7.fhir.r4.model.DateTimeType;
 import org.hl7.fhir.r4.model.FamilyMemberHistory;
+import org.hl7.fhir.r4.model.ResourceType;
 import org.hl7.fhir.r4.model.FamilyMemberHistory.FamilyHistoryStatus;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
@@ -26,7 +27,7 @@ import vn.moh.fhir.utils.DataUtils;
 
 @JsonInclude(Include.NON_NULL)
 @Document(collection = "family_member_history")
-@CompoundIndex(def = "{'id':1, '_active':1, '_version':1, 'patient.reference':1}", name = "index_by_default")
+@CompoundIndex(def = "{'uuid':1, '_active':1, '_version':1, 'patient.reference':1}", name = "index_by_default")
 public class FamilyMemberHistoryEntity {
 
     public static class FamilyMemberHistoryCondition {
@@ -54,6 +55,10 @@ public class FamilyMemberHistoryEntity {
             condition.setOnset(new StringType(onset));
             condition.setNote(DataUtils.transform(note, AnnotationModel::toFhir));
             return condition;
+        }
+        
+        public FamilyMemberHistoryCondition() {
+            
         }
         
         public FamilyMemberHistoryCondition(FamilyMemberHistory.FamilyMemberHistoryConditionComponent condition) {
@@ -86,8 +91,8 @@ public class FamilyMemberHistoryEntity {
         }
     }
     
-    @Id public ObjectId _id;
-    String id;
+    @Id public ObjectId id;
+    String uuid;
     int _version;
     boolean _active;
         
@@ -107,7 +112,7 @@ public class FamilyMemberHistoryEntity {
     public FamilyMemberHistory toFhir() {
         var fmh = new FamilyMemberHistory();
         
-        fmh.setId(id);
+        fmh.setId(uuid);
         fmh.setIdentifier(DataUtils.transform(identifier, IdentifierModel::toFhir));
         
         if(!StringUtils.isEmpty(status)) {
@@ -146,9 +151,19 @@ public class FamilyMemberHistoryEntity {
         return fmh;
     }
     
+    public FamilyMemberHistoryEntity() {
+        
+    }
+    
     public FamilyMemberHistoryEntity(FamilyMemberHistory fmh) {
         if(fmh != null) {
-            this.id = fmh.getId();
+            
+            this.uuid = fmh.getId();
+            
+            if(this.uuid != null && this.uuid.startsWith(ResourceType.FamilyMemberHistory + "/")) {
+                this.uuid = this.uuid.replace(ResourceType.FamilyMemberHistory + "/", "");
+            }
+            
             this.identifier = DataUtils.transform(fmh.getIdentifier(), IdentifierModel::fromFhir);
             if(fmh.hasStatus()) {
                 this.status = fmh.getStatus().toCode();
@@ -190,5 +205,17 @@ public class FamilyMemberHistoryEntity {
             return new FamilyMemberHistoryEntity(fmh);
         }
         return null;
+    }
+    
+    public int get_Version() {
+        return _version;
+    }
+    
+    public void set_Version(int _version) {
+        this._version = _version;
+    }
+    
+    public void set_Active(boolean _active) {
+        this._active = _active;
     }
 }

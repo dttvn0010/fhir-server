@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.hl7.fhir.r4.model.AllergyIntolerance;
+import org.hl7.fhir.r4.model.ResourceType;
 import org.hl7.fhir.r4.model.AllergyIntolerance.AllergyIntoleranceType;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
@@ -24,7 +25,7 @@ import vn.moh.fhir.utils.DataUtils;
 
 @JsonInclude(Include.NON_NULL)
 @Document(collection = "allergy_intolerance")
-@CompoundIndex(def = "{'id':1, '_active':1, '_version':1, 'patient.reference':1, 'encounter.reference':1}", name = "index_by_default")
+@CompoundIndex(def = "{'uuid':1, '_active':1, '_version':1, 'patient.reference':1, 'encounter.reference':1}", name = "index_by_default")
 public class AllergyIntoleranceEntity {
 
     public static class AllergyIntoleranceReaction {
@@ -57,6 +58,10 @@ public class AllergyIntoleranceEntity {
             return reaction;
         }
         
+        public AllergyIntoleranceReaction() {
+            
+        }
+        
         public AllergyIntoleranceReaction(AllergyIntolerance.AllergyIntoleranceReactionComponent reaction) {
             if(reaction != null) {
                 if(reaction.hasSubstance()) {
@@ -87,8 +92,8 @@ public class AllergyIntoleranceEntity {
         
     }
     
-    @Id public ObjectId _id;
-    String id;
+    @Id public ObjectId id;
+    String uuid;
     int _version;
     boolean _active;
     
@@ -111,7 +116,7 @@ public class AllergyIntoleranceEntity {
     public AllergyIntolerance toFhir() {
         var allergyIntolerance = new AllergyIntolerance();
         
-        allergyIntolerance.setId(id);
+        allergyIntolerance.setId(uuid);
         
         allergyIntolerance.setIdentifier(DataUtils.transform(identifier, IdentifierModel::toFhir));
         
@@ -152,9 +157,17 @@ public class AllergyIntoleranceEntity {
         return allergyIntolerance;
     }
     
+    public AllergyIntoleranceEntity() {
+        
+    }
+    
     public AllergyIntoleranceEntity(AllergyIntolerance allergyIntolerance) {
         if(allergyIntolerance != null) {
-            this.id = allergyIntolerance.getId();
+            this.uuid = allergyIntolerance.getId();
+            
+            if(this.uuid != null && this.uuid.startsWith(ResourceType.AllergyIntolerance + "/")) {
+                this.uuid = this.uuid.replace(ResourceType.AllergyIntolerance + "/", "");
+            }
             
             this.identifier = DataUtils.transform(allergyIntolerance.getIdentifier(), IdentifierModel::fromFhir);
             
@@ -201,5 +214,17 @@ public class AllergyIntoleranceEntity {
         }
         
         return null;
+    }
+    
+    public int get_Version() {
+        return _version;
+    }
+    
+    public void set_Version(int _version) {
+        this._version = _version;
+    }
+    
+    public void set_Active(boolean _active) {
+        this._active = _active;
     }
 }

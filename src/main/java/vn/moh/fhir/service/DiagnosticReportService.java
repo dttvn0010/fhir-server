@@ -11,15 +11,21 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import vn.moh.fhir.model.entity.DiagnosticReportEntity;
+import vn.moh.fhir.repository.DiagnosticReportRepository;
 
 @Service
 public class DiagnosticReportService {
 
+    @Autowired private DiagnosticReportRepository diagnosticReportRepository;
     @Autowired private MongoTemplate mongoTemplate;
 
-    public DiagnosticReportEntity getById(String id) {
-        var critera =  Criteria.where("id").is(id).and("_active").is(true);
+    public DiagnosticReportEntity getByUuid(String uuid) {
+        var critera =  Criteria.where("uuid").is(uuid).and("_active").is(true);
         return mongoTemplate.findOne(new Query(critera), DiagnosticReportEntity.class);
+    }
+    
+    public DiagnosticReportEntity save(DiagnosticReportEntity diagnosticReportEntity) {
+        return diagnosticReportRepository.save(diagnosticReportEntity);
     }
     
     public List<DiagnosticReportEntity> search(String patientId, String encounterId, Integer offset, Integer count) {

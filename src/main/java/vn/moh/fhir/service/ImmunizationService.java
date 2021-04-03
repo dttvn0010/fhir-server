@@ -17,8 +17,8 @@ public class ImmunizationService {
 
     @Autowired private MongoTemplate mongoTemplate;
 
-    public ImmunizationEntity getById(String id) {
-        var critera =  Criteria.where("id").is(id).and("_active").is(true);
+    public ImmunizationEntity getByUuid(String uuid) {
+        var critera =  Criteria.where("uuid").is(uuid).and("_active").is(true);
         return mongoTemplate.findOne(new Query(critera), ImmunizationEntity.class);
     }
     

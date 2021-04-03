@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.hl7.fhir.r4.model.Condition;
+import org.hl7.fhir.r4.model.ResourceType;
 import org.hl7.fhir.r4.model.StringType;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
@@ -22,7 +23,7 @@ import vn.moh.fhir.utils.DataUtils;
 
 @JsonInclude(Include.NON_NULL)
 @Document(collection = "condition")
-@CompoundIndex(def = "{'id':1, '_active':1, '_version':1, 'patient.reference':1, 'encounter.reference':1}", name = "index_by_default")
+@CompoundIndex(def = "{'uuid':1, '_active':1, '_version':1, 'patient.reference':1, 'encounter.reference':1}", name = "index_by_default")
 public class ConditionEntity {
 
     public static class ConditionStage {
@@ -43,6 +44,10 @@ public class ConditionEntity {
             }
             
             return stage;
+        }
+        
+        public ConditionStage() {
+            
         }
         
         public ConditionStage(Condition.ConditionStageComponent stage) {
@@ -78,6 +83,10 @@ public class ConditionEntity {
             return evidence;
         }
         
+        public ConditionEvidence() {
+            
+        }
+        
         public ConditionEvidence(Condition.ConditionEvidenceComponent evidence) {
             if(evidence != null) {
                 this.code = DataUtils.transform(evidence.getCode(), CodeableConceptModel::fromFhir);
@@ -93,8 +102,8 @@ public class ConditionEntity {
         }
     }
     
-    @Id public ObjectId _id;
-    String id;
+    @Id public ObjectId id;
+    String uuid;
     int _version;
     boolean _active;
     
@@ -118,7 +127,7 @@ public class ConditionEntity {
     public Condition toFhir() {
         var condition = new Condition();
         
-        condition.setId(id);
+        condition.setId(uuid);
         
         condition.setIdentifier(DataUtils.transform(identifier, IdentifierModel::toFhir));
         
@@ -171,9 +180,17 @@ public class ConditionEntity {
         return condition;
     }
     
+    public ConditionEntity() {
+        
+    }
+    
     public ConditionEntity(Condition condition) {
         if(condition != null) {
-            this.id = condition.getId();
+            this.uuid = condition.getId();
+            
+            if(this.uuid != null && this.uuid.startsWith(ResourceType.Condition + "/")) {
+                this.uuid = this.uuid.replace(ResourceType.Condition + "/", "");
+            }
             
             this.identifier = DataUtils.transform(condition.getIdentifier(), IdentifierModel::fromFhir);
             
@@ -230,5 +247,18 @@ public class ConditionEntity {
             return new ConditionEntity(condition);
         }
         return null;
+    }
+    
+    
+    public int get_Version() {
+        return _version;
+    }
+    
+    public void set_Version(int _version) {
+        this._version = _version;
+    }
+    
+    public void set_Active(boolean _active) {
+        this._active = _active;
     }
 }

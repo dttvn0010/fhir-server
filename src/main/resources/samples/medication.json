@@ -1,0 +1,37 @@
+{
+  "resourceType": "Medication",
+  "code": {
+    "coding": [
+      {
+        "system": "http://fhir.moh.vn/CodeSystem/Medication",
+        "code": "VD-8049-09",
+        "display": "Panadol"
+      }
+    ],
+    "text": "Panadol"
+  },
+  "ingredient": [
+    {
+      "itemCodeableConcept": {
+        "coding": [
+          {
+            "system": "https://www.moh.gov.vn/CodeSystem/Medication-Ingredient",
+            "code": "40",
+            "display": "Paracetamol"
+          }
+        ],
+        "text": "Paracetamol"
+      },
+      "strength": {
+        "numerator": {
+          "value": 30,
+          "unit": "mg"
+        },
+        "denominator": {
+          "value": 1,
+          "unit": "viên"
+        }
+      }
+    }
+  ]
+}

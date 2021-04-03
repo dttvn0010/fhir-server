@@ -14,6 +14,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import org.hl7.fhir.r4.model.RelatedPerson;
+import org.hl7.fhir.r4.model.ResourceType;
 
 import vn.moh.fhir.model.base.AddressModel;
 import vn.moh.fhir.model.base.AttachmentModel;
@@ -27,11 +28,11 @@ import vn.moh.fhir.utils.DataUtils;
 
 @JsonInclude(Include.NON_NULL)
 @Document(collection = "related_person")
-@CompoundIndex(def = "{'id':1, '_active':1, '_version':1, 'patient.reference':1}", name = "index_by_default")
+@CompoundIndex(def = "{'uuid':1, '_active':1, '_version':1, 'patient.reference':1}", name = "index_by_default")
 public class RelatedPersonEntity {
     
-    @Id public ObjectId _id;
-    String id;
+    @Id public ObjectId id;
+    String uuid;
     int _version;
     boolean _active;
     
@@ -53,7 +54,7 @@ public class RelatedPersonEntity {
     public RelatedPerson toFhir() {
         var relatedPerson = new RelatedPerson();
         
-        relatedPerson.setId(id);
+        relatedPerson.setId(uuid);
         relatedPerson.setIdentifier(DataUtils.transform(identifier, IdentifierModel::toFhir));
         
         if(active !=  null) {
@@ -87,9 +88,17 @@ public class RelatedPersonEntity {
         return relatedPerson;
     }
     
+    public RelatedPersonEntity() {
+        
+    }
+    
     public RelatedPersonEntity(RelatedPerson relatedPerson) {
         if(relatedPerson != null) {
-            this.id = relatedPerson.getId();
+            this.uuid = relatedPerson.getId();
+            
+            if(this.uuid != null && this.uuid.startsWith(ResourceType.RelatedPerson + "/")) {
+                this.uuid = this.uuid.replace(ResourceType.RelatedPerson + "/", "");
+            }
             
             this.identifier = DataUtils.transform(relatedPerson.getIdentifier(), IdentifierModel::fromFhir);
             
@@ -128,5 +137,17 @@ public class RelatedPersonEntity {
             return new RelatedPersonEntity(relatedPerson);
         }
         return null;
+    }
+    
+    public int get_Version() {
+        return _version;
+    }
+    
+    public void set_Version(int _version) {
+        this._version = _version;
+    }
+    
+    public void set_Active(boolean _active) {
+        this._active = _active;
     }
 }

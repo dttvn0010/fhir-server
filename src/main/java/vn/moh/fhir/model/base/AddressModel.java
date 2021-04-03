@@ -60,6 +60,10 @@ public class AddressModel {
         return address;
     }
     
+    public AddressModel() {
+        
+    }
+    
     public AddressModel(Address address) {
         if(address.hasUse()) {
             this.use = address.getUse().toCode();
