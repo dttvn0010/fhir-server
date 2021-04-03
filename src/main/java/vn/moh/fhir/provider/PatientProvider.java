@@ -13,6 +13,9 @@ import org.hl7.fhir.r4.model.StringType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.helger.commons.io.resource.ClassPathResource;
+
+import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.annotation.Count;
 import ca.uhn.fhir.rest.annotation.Create;
 import ca.uhn.fhir.rest.annotation.Delete;
@@ -76,6 +79,17 @@ public class PatientProvider implements IResourceProvider{
     @Search
     public List<Patient> search(@OptionalParam(name ="name") StringType name,                            
             @Count Integer count, @Offset Integer offset) {
+        
+        var xmlParser = FhirContext.forR4().newXmlParser();
+        var str = (new ClassPathResource("structure-definitions/ethnic-group.xml")).getInputStream();
+        var res = xmlParser.parseResource(str);
+        
+        var jsonParser = FhirContext.forR4().newJsonParser();
+        jsonParser.setPrettyPrint(true);
+        var jsonst = jsonParser.encodeResourceToString(res);
+        
+        System.out.println(jsonst);
+        
         
         var patientList = patientService.search(name != null? name.getValue(): "", offset, count);
         return DataUtils.transform(patientList, PatientEntity::toFhir);
