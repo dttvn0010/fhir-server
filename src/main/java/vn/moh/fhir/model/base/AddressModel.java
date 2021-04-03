@@ -49,12 +49,12 @@ public class AddressModel {
         
         if(district != null) {
             address.setDistrict(district.getDisplay());
-            address.addExtension(FhirUtils.createExtension(ExtensionURL.ADDRESS_WARD, district.toFhir()));
+            address.addExtension(FhirUtils.createExtension(ExtensionURL.ADDRESS_DISTRICT, district.toFhir()));
         }
         
         if(city != null) {
             address.setCity(city.getDisplay());
-            address.addExtension(FhirUtils.createExtension(ExtensionURL.ADDRESS_WARD, city.toFhir()));
+            address.addExtension(FhirUtils.createExtension(ExtensionURL.ADDRESS_CITY, city.toFhir()));
         }
         
         return address;
