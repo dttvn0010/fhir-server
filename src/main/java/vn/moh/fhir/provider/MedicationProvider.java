@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import ca.uhn.fhir.rest.annotation.Count;
 import ca.uhn.fhir.rest.annotation.Create;
+import ca.uhn.fhir.rest.annotation.Delete;
 import ca.uhn.fhir.rest.annotation.IdParam;
 import ca.uhn.fhir.rest.annotation.Offset;
 import ca.uhn.fhir.rest.annotation.OptionalParam;
@@ -69,6 +70,16 @@ public class MedicationProvider  implements IResourceProvider {
         
         outcome.setResource(medication);
         return outcome;
+    }
+    
+    @Delete
+    public void delete(@IdParam IdType id) {
+        var medicationEntity = medicationService.getByUuid(id.getIdPart());
+        
+        if(medicationEntity != null) {
+            medicationEntity.set_Active(false);
+            medicationService.save(medicationEntity);
+        }
     }
     
     @Search

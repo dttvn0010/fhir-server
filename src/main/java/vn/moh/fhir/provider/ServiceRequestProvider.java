@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import ca.uhn.fhir.rest.annotation.Count;
 import ca.uhn.fhir.rest.annotation.Create;
+import ca.uhn.fhir.rest.annotation.Delete;
 import ca.uhn.fhir.rest.annotation.IdParam;
 import ca.uhn.fhir.rest.annotation.Offset;
 import ca.uhn.fhir.rest.annotation.OptionalParam;
@@ -71,7 +72,16 @@ public class ServiceRequestProvider implements IResourceProvider {
         return outcome;
     }
     
-    
+    @Delete
+    public void delete(@IdParam IdType id) {
+        var serviceRequestEntity = serviceRequestService.getByUuid(id.getIdPart());
+        
+        if(serviceRequestEntity != null) {
+            serviceRequestEntity.set_Active(false);
+            serviceRequestService.save(serviceRequestEntity);
+        }
+    }
+        
     @Search
     public List<ServiceRequest> search(
             @OptionalParam(name ="patient") ReferenceParam patient,

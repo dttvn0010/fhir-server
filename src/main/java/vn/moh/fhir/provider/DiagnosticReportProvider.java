@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import ca.uhn.fhir.rest.annotation.Count;
 import ca.uhn.fhir.rest.annotation.Create;
+import ca.uhn.fhir.rest.annotation.Delete;
 import ca.uhn.fhir.rest.annotation.IdParam;
 import ca.uhn.fhir.rest.annotation.Offset;
 import ca.uhn.fhir.rest.annotation.OptionalParam;
@@ -71,6 +72,15 @@ public class DiagnosticReportProvider  implements IResourceProvider {
         return outcome;
     }
     
+    @Delete
+    public void delete(@IdParam IdType id) {
+        var diagnosticReportEntity = diagnosticReportService.getByUuid(id.getIdPart());
+        
+        if(diagnosticReportEntity != null) {
+            diagnosticReportEntity.set_Active(false);
+            diagnosticReportService.save(diagnosticReportEntity);
+        }
+    }
     
     @Search
     public List<DiagnosticReport> search(

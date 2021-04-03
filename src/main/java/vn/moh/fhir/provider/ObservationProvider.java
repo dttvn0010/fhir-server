@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import ca.uhn.fhir.rest.annotation.Count;
 import ca.uhn.fhir.rest.annotation.Create;
+import ca.uhn.fhir.rest.annotation.Delete;
 import ca.uhn.fhir.rest.annotation.IdParam;
 import ca.uhn.fhir.rest.annotation.Offset;
 import ca.uhn.fhir.rest.annotation.OptionalParam;
@@ -69,6 +70,16 @@ public class ObservationProvider implements IResourceProvider {
         
         outcome.setResource(observation);
         return outcome;
+    }
+    
+    @Delete
+    public void delete(@IdParam IdType id) {
+        var observationEntity = observationService.getByUuid(id.getIdPart());
+        
+        if(observationEntity != null) {
+            observationEntity.set_Active(false);
+            observationService.save(observationEntity);
+        }
     }
     
     @Search
