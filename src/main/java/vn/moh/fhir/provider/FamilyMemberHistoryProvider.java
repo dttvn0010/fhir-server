@@ -20,11 +20,12 @@ import ca.uhn.fhir.rest.server.IResourceProvider;
 import vn.moh.fhir.model.entity.FamilyMemberHistoryEntity;
 import vn.moh.fhir.service.FamilyMemberHistoryService;
 import vn.moh.fhir.utils.DataUtils;
-import vn.moh.fhir.utils.FhirUtils;
+import vn.moh.fhir.utils.FhirHelper;
 
 @Component
 public class FamilyMemberHistoryProvider  implements IResourceProvider  {
 
+    @Autowired private FhirHelper fhirUtils;
     @Autowired private FamilyMemberHistoryService familyMemberHistoryService;
 
     @Override
@@ -36,7 +37,7 @@ public class FamilyMemberHistoryProvider  implements IResourceProvider  {
     public Resource read(@IdParam IdType idType) {
         var familiMemberHistoryEntity = familyMemberHistoryService.getByUuid(idType.getIdPart());
         if(familiMemberHistoryEntity == null) {
-            FhirUtils.createOperationOutcome("No FamilyMemberHistory with \"" + idType.getIdPart() + "\" found");
+            fhirUtils.createOperationOutcome("No FamilyMemberHistory with \"" + idType.getIdPart() + "\" found");
         }
         return familiMemberHistoryEntity.toFhir();
     }    

@@ -21,17 +21,20 @@ import ca.uhn.fhir.rest.annotation.OptionalParam;
 import ca.uhn.fhir.rest.annotation.Read;
 import ca.uhn.fhir.rest.annotation.ResourceParam;
 import ca.uhn.fhir.rest.annotation.Search;
+import ca.uhn.fhir.rest.annotation.Validate;
 import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.api.ValidationModeEnum;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import vn.moh.fhir.model.entity.SpecimenEntity;
 import vn.moh.fhir.service.SpecimenService;
 import vn.moh.fhir.utils.DataUtils;
-import vn.moh.fhir.utils.FhirUtils;
+import vn.moh.fhir.utils.FhirHelper;
 
 @Component
 public class SpecimenProvider implements IResourceProvider {
-
+    
+    @Autowired private FhirHelper fhirUtils;    
     @Autowired private SpecimenService specimenService;
     
     @Override
@@ -43,13 +46,34 @@ public class SpecimenProvider implements IResourceProvider {
     public Resource read(@IdParam IdType idType) {
         var specimenEntity = specimenService.getByUuid(idType.getIdPart());
         if(specimenEntity == null) {
-            FhirUtils.createOperationOutcome("No Specimen with \"" + idType.getIdPart() + "\" found");
+            fhirUtils.createOperationOutcome("No Specimen with \"" + idType.getIdPart() + "\" found");
         }
         return specimenEntity.toFhir();
     }    
     
+    @Validate
+    public MethodOutcome validate(@ResourceParam Specimen specimen, 
+            @Validate.Mode ValidationModeEnum mode,
+            @Validate.Profile String profile) {
+        
+        var result = fhirUtils.validateResource(specimen, profile);
+        var outcome = new MethodOutcome();
+        outcome.setOperationOutcome(result.toOperationOutcome());
+        return outcome;       
+    }
+    
     @Create
     public MethodOutcome create(@ResourceParam Specimen specimen) {
+        // validate resource
+        var validateResult = fhirUtils.validateResource(specimen, null);
+        
+        if(!validateResult.isSuccessful()) {
+            var outcome = new MethodOutcome();           
+            outcome.setResource(validateResult.toOperationOutcome());
+            return outcome;
+        }
+        
+        // Save resource        
         var id = UUID.randomUUID().toString();
         specimen.setId(id);      
         var specimenEntity = SpecimenEntity.fromFhir(specimen);
@@ -61,7 +85,7 @@ public class SpecimenProvider implements IResourceProvider {
         
         var outcome = new MethodOutcome();
         outcome.setCreated(true);
-        outcome.setOperationOutcome(FhirUtils.createOperationOutcome(                
+        outcome.setOperationOutcome(fhirUtils.createOperationOutcome(                
                 "urn:uuid:" + specimen.getId(),
                 "Create succsess",
                 IssueSeverity.INFORMATION, 

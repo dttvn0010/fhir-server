@@ -23,17 +23,20 @@ import ca.uhn.fhir.rest.annotation.Read;
 import ca.uhn.fhir.rest.annotation.ResourceParam;
 import ca.uhn.fhir.rest.annotation.Search;
 import ca.uhn.fhir.rest.annotation.Update;
+import ca.uhn.fhir.rest.annotation.Validate;
 import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.api.ValidationModeEnum;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import vn.moh.fhir.model.entity.EncounterEntity;
 import vn.moh.fhir.service.EncounterService;
 import vn.moh.fhir.utils.DataUtils;
-import vn.moh.fhir.utils.FhirUtils;
+import vn.moh.fhir.utils.FhirHelper;
 
 @Component
 public class EncounterProvider  implements IResourceProvider  {
 
+    @Autowired private FhirHelper fhirUtils;
     @Autowired private EncounterService encounterService;
 
     @Override
@@ -45,7 +48,7 @@ public class EncounterProvider  implements IResourceProvider  {
     public Resource read(@IdParam IdType idType) {
         var encounterEntity = encounterService.getByUuid(idType.getIdPart());
         if(encounterEntity == null) {
-            FhirUtils.createOperationOutcome("No Encounter with \"" + idType.getIdPart() + "\" found");
+            fhirUtils.createOperationOutcome("No Encounter with \"" + idType.getIdPart() + "\" found");
         }
         return encounterEntity.toFhir();
     }    
@@ -65,7 +68,7 @@ public class EncounterProvider  implements IResourceProvider  {
         }
         
         if(encounterEntity == null) {
-            FhirUtils.createOperationOutcome("No Encounter with \"" + idType.getIdPart() + "\" and version " + version + " found");
+            fhirUtils.createOperationOutcome("No Encounter with \"" + idType.getIdPart() + "\" and version " + version + " found");
         }
         
         return encounterEntity.toFhir();
@@ -79,8 +82,30 @@ public class EncounterProvider  implements IResourceProvider  {
         return DataUtils.transform(encounterList, EncounterEntity::toFhir);
     }
     
+    @Validate
+    public MethodOutcome validate(@ResourceParam Encounter encounter, 
+            @Validate.Mode ValidationModeEnum mode,
+            @Validate.Profile String profile) {
+        
+        var result = fhirUtils.validateResource(encounter, profile);
+        var outcome = new MethodOutcome();
+        outcome.setOperationOutcome(result.toOperationOutcome());
+        return outcome;       
+    }
+    
     @Create
     public MethodOutcome create(@ResourceParam Encounter encounter) {
+        // validate resource
+        var validateResult = fhirUtils.validateResource(encounter, null);
+        
+        if(!validateResult.isSuccessful()) {
+            var outcome = new MethodOutcome();           
+            outcome.setResource(validateResult.toOperationOutcome());
+            return outcome;
+        }
+        
+        // Save resource
+        
         var id = UUID.randomUUID().toString();
         encounter.setId(id);      
         var encounterEntity = EncounterEntity.fromFhir(encounter);
@@ -92,7 +117,7 @@ public class EncounterProvider  implements IResourceProvider  {
         
         var outcome = new MethodOutcome();
         outcome.setCreated(true);
-        outcome.setOperationOutcome(FhirUtils.createOperationOutcome(                
+        outcome.setOperationOutcome(fhirUtils.createOperationOutcome(                
                 "urn:uuid:" + encounter.getId(),
                 "Create succsess",
                 IssueSeverity.INFORMATION, 
@@ -106,13 +131,14 @@ public class EncounterProvider  implements IResourceProvider  {
     @Update
     public MethodOutcome update(@IdParam IdType id, @ResourceParam Encounter encounter) {
         
+        // Check if resource existed
         var oldEncounterEntity = encounterService.getByUuid(id.getIdPart());
         int oldVersion = 0;
         
         if(oldEncounterEntity == null) {
             var outcome = new MethodOutcome();
             outcome.setCreated(false);
-            outcome.setOperationOutcome(FhirUtils.createOperationOutcome(
+            outcome.setResource(fhirUtils.createOperationOutcome(
                     "No Encounter with id :\"" + id.getIdPart() + " \" found",
                     "Update fail",
                     IssueSeverity.ERROR, 
@@ -120,7 +146,17 @@ public class EncounterProvider  implements IResourceProvider  {
              ));
             return outcome;
         }
-            
+        
+        // validate resource
+        var validateResult = fhirUtils.validateResource(encounter, null);
+        
+        if(!validateResult.isSuccessful()) {
+            var outcome = new MethodOutcome();           
+            outcome.setResource(validateResult.toOperationOutcome());
+            return outcome;
+        }
+        
+        // Save resource            
         if(oldEncounterEntity != null) {
             oldVersion = oldEncounterEntity.get_Version();
             oldEncounterEntity.set_Active(false);
@@ -137,7 +173,7 @@ public class EncounterProvider  implements IResourceProvider  {
         
         var outcome = new MethodOutcome();
         outcome.setCreated(false);
-        outcome.setOperationOutcome(FhirUtils.createOperationOutcome(                
+        outcome.setOperationOutcome(fhirUtils.createOperationOutcome(                
                 "urn:uuid:" + encounter.getId(),
                 "Update succsess",
                 IssueSeverity.INFORMATION, 

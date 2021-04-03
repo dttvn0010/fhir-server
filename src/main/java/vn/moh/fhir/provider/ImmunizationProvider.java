@@ -20,11 +20,12 @@ import ca.uhn.fhir.rest.server.IResourceProvider;
 import vn.moh.fhir.model.entity.ImmunizationEntity;
 import vn.moh.fhir.service.ImmunizationService;
 import vn.moh.fhir.utils.DataUtils;
-import vn.moh.fhir.utils.FhirUtils;
+import vn.moh.fhir.utils.FhirHelper;
 
 @Component
 public class ImmunizationProvider implements IResourceProvider {
 
+    @Autowired private FhirHelper fhirUtils;
     @Autowired private ImmunizationService immunizationService;
     
     @Override
@@ -36,7 +37,7 @@ public class ImmunizationProvider implements IResourceProvider {
     public Resource read(@IdParam IdType idType) {
         var immunizationEntity = immunizationService.getByUuid(idType.getIdPart());
         if(immunizationEntity == null) {
-            FhirUtils.createOperationOutcome("No Immunization with \"" + idType.getIdPart() + "\" found");
+            fhirUtils.createOperationOutcome("No Immunization with \"" + idType.getIdPart() + "\" found");
         }
         return immunizationEntity.toFhir();
     }    

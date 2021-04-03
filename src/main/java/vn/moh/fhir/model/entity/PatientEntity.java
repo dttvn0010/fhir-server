@@ -25,7 +25,7 @@ import vn.moh.fhir.model.base.HumanNameModel;
 import vn.moh.fhir.model.base.IdentifierModel;
 import vn.moh.fhir.model.base.ReferenceModel;
 import vn.moh.fhir.utils.DataUtils;
-import vn.moh.fhir.utils.FhirUtils;
+import vn.moh.fhir.utils.FhirHelperFactory;
 import vn.moh.fhir.utils.Constants.ExtensionURL;
 
 @JsonInclude(Include.NON_NULL)
@@ -58,6 +58,8 @@ public class PatientEntity {
     CodeableConceptModel nationality;
     
     public Patient toFhir() {
+        var fhirHelper = FhirHelperFactory.getFhirHelper();
+        
         var patient = new Patient();
         
         patient.setId(uuid);
@@ -90,23 +92,23 @@ public class PatientEntity {
         }
         
         if(education != null) {
-            patient.addExtension(FhirUtils.createExtension(ExtensionURL.PATIENT_EDUCATION, education.toFhir()));
+            patient.addExtension(fhirHelper.createExtension(ExtensionURL.PATIENT_EDUCATION, education.toFhir()));
         }
         
         if(ethnic != null) {
-            patient.addExtension(FhirUtils.createExtension(ExtensionURL.PATIENT_ETHNIC, ethnic.toFhir()));
+            patient.addExtension(fhirHelper.createExtension(ExtensionURL.PATIENT_ETHNIC, ethnic.toFhir()));
         }
         
         if(religion != null) {
-            patient.addExtension(FhirUtils.createExtension(ExtensionURL.PATIENT_RELIGION, religion.toFhir()));
+            patient.addExtension(fhirHelper.createExtension(ExtensionURL.PATIENT_RELIGION, religion.toFhir()));
         }
         
         if(job != null) {
-            patient.addExtension(FhirUtils.createExtension(ExtensionURL.PATIENT_JOB, job.toFhir()));
+            patient.addExtension(fhirHelper.createExtension(ExtensionURL.PATIENT_JOB, job.toFhir()));
         }
         
         if(nationality != null) {
-            patient.addExtension(FhirUtils.createExtension(ExtensionURL.PATIENT_NATIONALITY, nationality.toFhir()));
+            patient.addExtension(fhirHelper.createExtension(ExtensionURL.PATIENT_NATIONALITY, nationality.toFhir()));
         }
         
         return patient;        
@@ -117,6 +119,8 @@ public class PatientEntity {
     }
     
     public PatientEntity(Patient patient) {
+        var fhirHelper = FhirHelperFactory.getFhirHelper();
+        
         if(patient != null) {
             this.uuid = patient.getId();
             
@@ -151,27 +155,27 @@ public class PatientEntity {
                 this.managingOrganization = ReferenceModel.fromFhir(patient.getManagingOrganization());
             }
             
-            var educationExt = FhirUtils.findExtension(patient.getExtension(), ExtensionURL.PATIENT_EDUCATION);
+            var educationExt = fhirHelper.findExtension(patient.getExtension(), ExtensionURL.PATIENT_EDUCATION);
             if(educationExt != null && educationExt.getValue() instanceof CodeableConcept) {
                 this.education = CodeableConceptModel.fromFhir((CodeableConcept) educationExt.getValue());
             }
             
-            var ethnicExt = FhirUtils.findExtension(patient.getExtension(), ExtensionURL.PATIENT_ETHNIC);
+            var ethnicExt = fhirHelper.findExtension(patient.getExtension(), ExtensionURL.PATIENT_ETHNIC);
             if(ethnicExt != null && ethnicExt.getValue() instanceof CodeableConcept) {
                 this.ethnic = CodeableConceptModel.fromFhir((CodeableConcept) ethnicExt.getValue());
             }
             
-            var religionExt = FhirUtils.findExtension(patient.getExtension(), ExtensionURL.PATIENT_RELIGION);
+            var religionExt = fhirHelper.findExtension(patient.getExtension(), ExtensionURL.PATIENT_RELIGION);
             if(religionExt != null && religionExt.getValue() instanceof CodeableConcept) {
                 this.religion = CodeableConceptModel.fromFhir((CodeableConcept) religionExt.getValue());
             }
             
-            var jobExt = FhirUtils.findExtension(patient.getExtension(), ExtensionURL.PATIENT_JOB);
+            var jobExt = fhirHelper.findExtension(patient.getExtension(), ExtensionURL.PATIENT_JOB);
             if(jobExt != null && jobExt.getValue() instanceof CodeableConcept) {
                 this.job = CodeableConceptModel.fromFhir((CodeableConcept) jobExt.getValue());
             }
             
-            var nationalityExt = FhirUtils.findExtension(patient.getExtension(), ExtensionURL.PATIENT_NATIONALITY);
+            var nationalityExt = fhirHelper.findExtension(patient.getExtension(), ExtensionURL.PATIENT_NATIONALITY);
             if(nationalityExt != null && nationalityExt.getValue() instanceof CodeableConcept) {
                 this.nationality = CodeableConceptModel.fromFhir((CodeableConcept) nationalityExt.getValue());
             }

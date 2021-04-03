@@ -21,17 +21,20 @@ import ca.uhn.fhir.rest.annotation.OptionalParam;
 import ca.uhn.fhir.rest.annotation.Read;
 import ca.uhn.fhir.rest.annotation.ResourceParam;
 import ca.uhn.fhir.rest.annotation.Search;
+import ca.uhn.fhir.rest.annotation.Validate;
 import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.api.ValidationModeEnum;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import vn.moh.fhir.model.entity.ConditionEntity;
 import vn.moh.fhir.service.ConditionService;
 import vn.moh.fhir.utils.DataUtils;
-import vn.moh.fhir.utils.FhirUtils;
+import vn.moh.fhir.utils.FhirHelper;
 
 @Component
 public class ConditionProvider implements IResourceProvider{
-
+    
+    @Autowired private FhirHelper fhirUtils;
     @Autowired private ConditionService conditionService;
 
     @Override
@@ -43,13 +46,34 @@ public class ConditionProvider implements IResourceProvider{
     public Resource read(@IdParam IdType idType) {
         var conditionEntity = conditionService.getByUuid(idType.getIdPart());
         if(conditionEntity == null) {
-            FhirUtils.createOperationOutcome("No Condition with \"" + idType.getIdPart() + "\" found");
+            fhirUtils.createOperationOutcome("No Condition with \"" + idType.getIdPart() + "\" found");
         }
         return conditionEntity.toFhir();
-    }    
+    }
+    
+    @Validate
+    public MethodOutcome validate(@ResourceParam Condition condition, 
+            @Validate.Mode ValidationModeEnum mode,
+            @Validate.Profile String profile) {
+        
+        var result = fhirUtils.validateResource(condition, profile);
+        var outcome = new MethodOutcome();
+        outcome.setOperationOutcome(result.toOperationOutcome());
+        return outcome;       
+    }
     
     @Create
     public MethodOutcome create(@ResourceParam Condition condition) {
+        // validate resource
+        var validateResult = fhirUtils.validateResource(condition, null);
+        
+        if(!validateResult.isSuccessful()) {
+            var outcome = new MethodOutcome();           
+            outcome.setResource(validateResult.toOperationOutcome());
+            return outcome;
+        }
+        
+        // Save resource
         var id = UUID.randomUUID().toString();
         condition.setId(id);      
         var patientEntity = ConditionEntity.fromFhir(condition);
@@ -61,7 +85,7 @@ public class ConditionProvider implements IResourceProvider{
         
         var outcome = new MethodOutcome();
         outcome.setCreated(true);
-        outcome.setOperationOutcome(FhirUtils.createOperationOutcome(                
+        outcome.setOperationOutcome(fhirUtils.createOperationOutcome(                
                 "urn:uuid:" + condition.getId(),
                 "Create succsess",
                 IssueSeverity.INFORMATION, 

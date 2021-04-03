@@ -21,17 +21,20 @@ import ca.uhn.fhir.rest.annotation.OptionalParam;
 import ca.uhn.fhir.rest.annotation.Read;
 import ca.uhn.fhir.rest.annotation.ResourceParam;
 import ca.uhn.fhir.rest.annotation.Search;
+import ca.uhn.fhir.rest.annotation.Validate;
 import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.api.ValidationModeEnum;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import vn.moh.fhir.model.entity.MedicationRequestEntity;
 import vn.moh.fhir.service.MedicationRequestService;
 import vn.moh.fhir.utils.DataUtils;
-import vn.moh.fhir.utils.FhirUtils;
+import vn.moh.fhir.utils.FhirHelper;
 
 @Component
 public class MedicationRequestProvider implements IResourceProvider {
 
+    @Autowired private FhirHelper fhirUtils;
     @Autowired private MedicationRequestService medicationRequestService;
     
     @Override
@@ -43,13 +46,34 @@ public class MedicationRequestProvider implements IResourceProvider {
     public Resource read(@IdParam IdType idType) {
         var medicationRequestEntity = medicationRequestService.getByUuid(idType.getIdPart());
         if(medicationRequestEntity == null) {
-            FhirUtils.createOperationOutcome("No MedicationRequest with \"" + idType.getIdPart() + "\" found");
+            fhirUtils.createOperationOutcome("No MedicationRequest with \"" + idType.getIdPart() + "\" found");
         }
         return medicationRequestEntity.toFhir();
     }    
     
+    @Validate
+    public MethodOutcome validate(@ResourceParam MedicationRequest medicationRequest, 
+            @Validate.Mode ValidationModeEnum mode,
+            @Validate.Profile String profile) {
+        
+        var result = fhirUtils.validateResource(medicationRequest, profile);
+        var outcome = new MethodOutcome();
+        outcome.setOperationOutcome(result.toOperationOutcome());
+        return outcome;       
+    }
+    
     @Create
     public MethodOutcome create(@ResourceParam MedicationRequest medicationRequest) {
+        // validate resource
+        var validateResult = fhirUtils.validateResource(medicationRequest, null);
+        
+        if(!validateResult.isSuccessful()) {
+            var outcome = new MethodOutcome();           
+            outcome.setResource(validateResult.toOperationOutcome());
+            return outcome;
+        }
+        
+        // Save resource          
         var id = UUID.randomUUID().toString();
         medicationRequest.setId(id);      
         var medicationRequestEntity = MedicationRequestEntity.fromFhir(medicationRequest);
@@ -61,7 +85,7 @@ public class MedicationRequestProvider implements IResourceProvider {
         
         var outcome = new MethodOutcome();
         outcome.setCreated(true);
-        outcome.setOperationOutcome(FhirUtils.createOperationOutcome(                
+        outcome.setOperationOutcome(fhirUtils.createOperationOutcome(                
                 "urn:uuid:" + medicationRequest.getId(),
                 "Create succsess",
                 IssueSeverity.INFORMATION, 

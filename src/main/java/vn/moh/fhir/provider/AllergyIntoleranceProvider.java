@@ -20,11 +20,12 @@ import ca.uhn.fhir.rest.server.IResourceProvider;
 import vn.moh.fhir.model.entity.AllergyIntoleranceEntity;
 import vn.moh.fhir.service.AllergyIntoleranceService;
 import vn.moh.fhir.utils.DataUtils;
-import vn.moh.fhir.utils.FhirUtils;
+import vn.moh.fhir.utils.FhirHelper;
 
 @Component
 public class AllergyIntoleranceProvider implements IResourceProvider{
-
+    
+    @Autowired private FhirHelper fhirUtils;
     @Autowired private AllergyIntoleranceService allergyIntoleranceService;
 
     @Override
@@ -36,12 +37,11 @@ public class AllergyIntoleranceProvider implements IResourceProvider{
     public Resource read(@IdParam IdType idType) {
         var allergyIntoleranceEntity = allergyIntoleranceService.getByUuid(idType.getIdPart());
         if(allergyIntoleranceEntity == null) {
-            FhirUtils.createOperationOutcome("No AllergyIntolerance with \"" + idType.getIdPart() + "\" found");
+            fhirUtils.createOperationOutcome("No AllergyIntolerance with \"" + idType.getIdPart() + "\" found");
         }
         return allergyIntoleranceEntity.toFhir();
     }    
-    
-    
+        
     @Search
     public List<AllergyIntolerance> search(
             @OptionalParam(name ="patient") ReferenceParam patient,

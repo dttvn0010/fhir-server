@@ -21,11 +21,12 @@ import ca.uhn.fhir.rest.server.IResourceProvider;
 import vn.moh.fhir.model.entity.PractitionerEntity;
 import vn.moh.fhir.service.PractitionerService;
 import vn.moh.fhir.utils.DataUtils;
-import vn.moh.fhir.utils.FhirUtils;
+import vn.moh.fhir.utils.FhirHelper;
 
 @Component
 public class PractitionerProvider implements IResourceProvider {
 
+    @Autowired private FhirHelper fhirUtils;
     @Autowired private PractitionerService practitionerService;
     
     @Override
@@ -37,7 +38,7 @@ public class PractitionerProvider implements IResourceProvider {
     public Resource read(@IdParam IdType idType) {
         var practitionerEntity = practitionerService.getByUuid(idType.getIdPart());
         if(practitionerEntity == null) {
-            FhirUtils.createOperationOutcome("No Practitioner with \"" + idType.getIdPart() + "\" found");
+            fhirUtils.createOperationOutcome("No Practitioner with \"" + idType.getIdPart() + "\" found");
         }
         return practitionerEntity.toFhir();
     }    

@@ -1,0 +1,260 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "ethnic-groups",
+  "url": "https://fhir.moh.gov.vn/CodeSystem/ethnic-groups",
+  "version": "1.0.0",
+  "name": "DM_DANTOC",
+  "title": "Danh mục dân tộc",
+  "status": "active",
+  "publisher": "Ministry of Health (Vietnam)",
+  "concept": [
+    {
+      "code": "00025",
+      "display": "01 - Kinh"
+    },
+    {
+      "code": "00048",
+      "display": "02 - Tày"
+    },
+    {
+      "code": "00099",
+      "display": "02 - Tày"
+    },
+    {
+      "code": "00107",
+      "display": "02 - Pa dí (Tày)"
+    },
+    {
+      "code": "00049",
+      "display": "03 - Thái"
+    },
+    {
+      "code": "00020",
+      "display": "04 - Hoa"
+    },
+    {
+      "code": "00023",
+      "display": "05 - Khơ-me"
+    },
+    {
+      "code": "00035",
+      "display": "06 - Mường"
+    },
+    {
+      "code": "00037",
+      "display": "07 - Nùng"
+    },
+    {
+      "code": "00017",
+      "display": "08 - HMông"
+    },
+    {
+      "code": "00012",
+      "display": "09 - Dao"
+    },
+    {
+      "code": "00014",
+      "display": "10 - Gia-rai"
+    },
+    {
+      "code": "00036",
+      "display": "11 - Ngái"
+    },
+    {
+      "code": "00013",
+      "display": "12 - Ê-đê"
+    },
+    {
+      "code": "00110",
+      "display": "13 - Ba na"
+    },
+    {
+      "code": "00111",
+      "display": "14 - Xơ-Đăng\r\n"
+    },
+    {
+      "code": "00109",
+      "display": "15 - Cao lan"
+    },
+    {
+      "code": "00044",
+      "display": "15 - Sán Chay"
+    },
+    {
+      "code": "00010",
+      "display": "16 - Cơ-ho"
+    },
+    {
+      "code": "00004",
+      "display": "17 - Chăm"
+    },
+    {
+      "code": "00045",
+      "display": "18 - Sán Dìu"
+    },
+    {
+      "code": "00018",
+      "display": "19 - Hrê"
+    },
+    {
+      "code": "00032",
+      "display": "20 - Mnông"
+    },
+    {
+      "code": "00042",
+      "display": "21 - Ra-glai"
+    },
+    {
+      "code": "00052",
+      "display": "22 - Xtiêng"
+    },
+    {
+      "code": "00051",
+      "display": "23 - Bru-Vân Kiều"
+    },
+    {
+      "code": "00050",
+      "display": "24 - Thổ"
+    },
+    {
+      "code": "00015",
+      "display": "25 - Giáy"
+    },
+    {
+      "code": "00112",
+      "display": "26 - Cơ-tu\r\n"
+    },
+    {
+      "code": "00016",
+      "display": "27 - Gié Triêng"
+    },
+    {
+      "code": "00033",
+      "display": "28 - Mạ"
+    },
+    {
+      "code": "00024",
+      "display": "29 - Khơ-mú"
+    },
+    {
+      "code": "00008",
+      "display": "30 - Co"
+    },
+    {
+      "code": "00047",
+      "display": "31 - Tà-ôi"
+    },
+    {
+      "code": "00005",
+      "display": "32 - Chơ-ro"
+    },
+    {
+      "code": "00022",
+      "display": "33 - Kháng"
+    },
+    {
+      "code": "00053",
+      "display": "34 - Xinh-mun"
+    },
+    {
+      "code": "00019",
+      "display": "35 - Hà Nhì"
+    },
+    {
+      "code": "00113",
+      "display": "36 - Chu ru\r\n"
+    },
+    {
+      "code": "00029",
+      "display": "37 - Lào"
+    },
+    {
+      "code": "00026",
+      "display": "38 - La Chí"
+    },
+    {
+      "code": "00027",
+      "display": "39 - La Ha"
+    },
+    {
+      "code": "00040",
+      "display": "40 - Phù Lá"
+    },
+    {
+      "code": "00028",
+      "display": "41 - La Hủ\r\n"
+    },
+    {
+      "code": "00031",
+      "display": "42 - Lự"
+    },
+    {
+      "code": "00030",
+      "display": "43 - Lô Lô"
+    },
+    {
+      "code": "00007",
+      "display": "44 - Chứt"
+    },
+    {
+      "code": "00034",
+      "display": "45 - Mảng"
+    },
+    {
+      "code": "00039",
+      "display": "46 - Pà Thẻn"
+    },
+    {
+      "code": "00011",
+      "display": "47 - Cờ Lao\r\n"
+    },
+    {
+      "code": "00115",
+      "display": "48 - Cống\r\n"
+    },
+    {
+      "code": "00108",
+      "display": "49 - Bố Y"
+    },
+    {
+      "code": "00046",
+      "display": "50 - Si La"
+    },
+    {
+      "code": "00041",
+      "display": "51 - Pu Péo"
+    },
+    {
+      "code": "00003",
+      "display": "52 - Brâu"
+    },
+    {
+      "code": "00038",
+      "display": "53 - Ơ Đu\r\n"
+    },
+    {
+      "code": "00043",
+      "display": "54 - Rơ măm\r\n"
+    },
+    {
+      "code": "00114",
+      "display": "55 - Người nước ngoài\r\n"
+    },
+    {
+      "code": "00104",
+      "display": "56 - AThắng"
+    },
+    {
+      "code": "00105",
+      "display": "57 - Katu"
+    },
+    {
+      "code": "00106",
+      "display": "58 - Paco"
+    },
+    {
+      "code": "00116",
+      "display": "99 - Không rõ\r\n"
+    }
+  ]
+}

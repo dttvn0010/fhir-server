@@ -23,16 +23,19 @@ import ca.uhn.fhir.rest.annotation.Read;
 import ca.uhn.fhir.rest.annotation.ResourceParam;
 import ca.uhn.fhir.rest.annotation.Search;
 import ca.uhn.fhir.rest.annotation.Update;
+import ca.uhn.fhir.rest.annotation.Validate;
 import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.api.ValidationModeEnum;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import vn.moh.fhir.model.entity.PatientEntity;
 import vn.moh.fhir.service.PatientService;
 import vn.moh.fhir.utils.DataUtils;
-import vn.moh.fhir.utils.FhirUtils;
+import vn.moh.fhir.utils.FhirHelper;
 
 @Component
 public class PatientProvider implements IResourceProvider{
 
+    @Autowired private FhirHelper fhirUtils;
     @Autowired private PatientService patientService;
     
     @Override
@@ -44,7 +47,7 @@ public class PatientProvider implements IResourceProvider{
     public Resource read(@IdParam IdType idType) {
         var patientEntity = patientService.getByUuid(idType.getIdPart());
         if(patientEntity == null) {
-            return FhirUtils.createOperationOutcome("No Patient with \"" + idType.getIdPart() + "\" found");
+            return fhirUtils.createOperationOutcome("No Patient with \"" + idType.getIdPart() + "\" found");
         }
         return patientEntity.toFhir();
     }    
@@ -64,7 +67,7 @@ public class PatientProvider implements IResourceProvider{
         }
         
         if(patientEntity == null) {
-            FhirUtils.createOperationOutcome("No Patient with \"" + idType.getIdPart() + "\" and version " + version + " found");
+            fhirUtils.createOperationOutcome("No Patient with \"" + idType.getIdPart() + "\" and version " + version + " found");
         }
         
         return patientEntity.toFhir();
@@ -78,8 +81,29 @@ public class PatientProvider implements IResourceProvider{
         return DataUtils.transform(patientList, PatientEntity::toFhir);
     }
     
+    @Validate
+    public MethodOutcome validate(@ResourceParam Patient patient, 
+            @Validate.Mode ValidationModeEnum mode,
+            @Validate.Profile String profile) {
+        
+        var result = fhirUtils.validateResource(patient, profile);
+        var outcome = new MethodOutcome();
+        outcome.setOperationOutcome(result.toOperationOutcome());
+        return outcome;       
+    }
+        
     @Create
     public MethodOutcome create(@ResourceParam Patient patient) {
+        // validate resource
+        var validateResult = fhirUtils.validateResource(patient, null);
+        
+        if(!validateResult.isSuccessful()) {
+            var outcome = new MethodOutcome();           
+            outcome.setResource(validateResult.toOperationOutcome());
+            return outcome;
+        }
+        
+        // Save resource        
         var id = UUID.randomUUID().toString();
         patient.setId(id);      
         var patientEntity = PatientEntity.fromFhir(patient);
@@ -91,7 +115,7 @@ public class PatientProvider implements IResourceProvider{
         
         var outcome = new MethodOutcome();
         outcome.setCreated(true);
-        outcome.setOperationOutcome(FhirUtils.createOperationOutcome(                
+        outcome.setOperationOutcome(fhirUtils.createOperationOutcome(                
                 "urn:uuid:" + patient.getId(),
                 "Create succsess",
                 IssueSeverity.INFORMATION, 
@@ -105,13 +129,14 @@ public class PatientProvider implements IResourceProvider{
     @Update
     public MethodOutcome update(@IdParam IdType id, @ResourceParam Patient patient) {
         
+        // Check if resource existed
         var oldPatientEntity = patientService.getByUuid(id.getIdPart());
         int oldVersion = 0;
         
         if(oldPatientEntity == null) {
             var outcome = new MethodOutcome();
             outcome.setCreated(false);
-            outcome.setOperationOutcome(FhirUtils.createOperationOutcome(
+            outcome.setResource(fhirUtils.createOperationOutcome(
                     "No patient with id :\"" + id.getIdPart() + " \" found",
                     "Update fail",
                     IssueSeverity.ERROR, 
@@ -126,6 +151,16 @@ public class PatientProvider implements IResourceProvider{
             patientService.save(oldPatientEntity);
         }
         
+        // validate resource
+        var validateResult = fhirUtils.validateResource(patient, null);
+        
+        if(!validateResult.isSuccessful()) {
+            var outcome = new MethodOutcome();           
+            outcome.setResource(validateResult.toOperationOutcome());
+            return outcome;
+        }
+        
+        // Save resouce        
         var patientEntity = PatientEntity.fromFhir(patient);
         patientEntity.set_Version(1 + oldVersion);
         patientEntity.set_Active(true);
@@ -136,7 +171,7 @@ public class PatientProvider implements IResourceProvider{
         
         var outcome = new MethodOutcome();
         outcome.setCreated(false);
-        outcome.setOperationOutcome(FhirUtils.createOperationOutcome(                
+        outcome.setOperationOutcome(fhirUtils.createOperationOutcome(                
                 "urn:uuid:" + patient.getId(),
                 "Update succsess",
                 IssueSeverity.INFORMATION, 

@@ -20,11 +20,12 @@ import ca.uhn.fhir.rest.server.IResourceProvider;
 import vn.moh.fhir.model.entity.OrganizationEntity;
 import vn.moh.fhir.service.OrganizationService;
 import vn.moh.fhir.utils.DataUtils;
-import vn.moh.fhir.utils.FhirUtils;
+import vn.moh.fhir.utils.FhirHelper;
 
 @Component
 public class OrganizationProvider implements IResourceProvider {
 
+    @Autowired private FhirHelper fhirUtils;
     @Autowired private OrganizationService organizationService;
     
     @Override
@@ -36,7 +37,7 @@ public class OrganizationProvider implements IResourceProvider {
     public Resource read(@IdParam IdType idType) {
         var orgnanizationEntity = organizationService.getByUuid(idType.getIdPart());
         if(orgnanizationEntity == null) {
-            FhirUtils.createOperationOutcome("No Organization with \"" + idType.getIdPart() + "\" found");
+            fhirUtils.createOperationOutcome("No Organization with \"" + idType.getIdPart() + "\" found");
         }
         return orgnanizationEntity.toFhir();
     }    

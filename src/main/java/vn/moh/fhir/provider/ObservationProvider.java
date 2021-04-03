@@ -21,17 +21,20 @@ import ca.uhn.fhir.rest.annotation.OptionalParam;
 import ca.uhn.fhir.rest.annotation.Read;
 import ca.uhn.fhir.rest.annotation.ResourceParam;
 import ca.uhn.fhir.rest.annotation.Search;
+import ca.uhn.fhir.rest.annotation.Validate;
 import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.api.ValidationModeEnum;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import vn.moh.fhir.model.entity.ObservationEntity;
 import vn.moh.fhir.service.ObservationService;
 import vn.moh.fhir.utils.DataUtils;
-import vn.moh.fhir.utils.FhirUtils;
+import vn.moh.fhir.utils.FhirHelper;
 
 @Component
 public class ObservationProvider implements IResourceProvider {
 
+    @Autowired private FhirHelper fhirUtils;
     @Autowired private ObservationService observationService;
     
     @Override
@@ -43,13 +46,34 @@ public class ObservationProvider implements IResourceProvider {
     public Resource read(@IdParam IdType idType) {
         var observationEntity = observationService.getByUuid(idType.getIdPart());
         if(observationEntity == null) {
-            FhirUtils.createOperationOutcome("No Observation with \"" + idType.getIdPart() + "\" found");
+            fhirUtils.createOperationOutcome("No Observation with \"" + idType.getIdPart() + "\" found");
         }
         return observationEntity.toFhir();
     }    
     
+    @Validate
+    public MethodOutcome validate(@ResourceParam Observation observation, 
+            @Validate.Mode ValidationModeEnum mode,
+            @Validate.Profile String profile) {
+        
+        var result = fhirUtils.validateResource(observation, profile);
+        var outcome = new MethodOutcome();
+        outcome.setOperationOutcome(result.toOperationOutcome());
+        return outcome;       
+    }
+        
     @Create
     public MethodOutcome create(@ResourceParam Observation observation) {
+        // validate resource
+        var validateResult = fhirUtils.validateResource(observation, null);
+        
+        if(!validateResult.isSuccessful()) {
+            var outcome = new MethodOutcome();           
+            outcome.setResource(validateResult.toOperationOutcome());
+            return outcome;
+        }
+        
+        // Save resource         
         var id = UUID.randomUUID().toString();
         observation.setId(id);      
         var observationEntity = ObservationEntity.fromFhir(observation);
@@ -61,7 +85,7 @@ public class ObservationProvider implements IResourceProvider {
         
         var outcome = new MethodOutcome();
         outcome.setCreated(true);
-        outcome.setOperationOutcome(FhirUtils.createOperationOutcome(                
+        outcome.setOperationOutcome(fhirUtils.createOperationOutcome(                
                 "urn:uuid:" + observation.getId(),
                 "Create succsess",
                 IssueSeverity.INFORMATION, 

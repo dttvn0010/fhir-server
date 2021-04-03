@@ -28,6 +28,9 @@ import vn.moh.fhir.provider.ProcedureProvider;
 import vn.moh.fhir.provider.RelatedPersonProvider;
 import vn.moh.fhir.provider.ServiceRequestProvider;
 import vn.moh.fhir.provider.SpecimenProvider;
+import vn.moh.fhir.provider.test.CodeSystemProvider;
+import vn.moh.fhir.provider.test.StructureDefinitionProvider;
+import vn.moh.fhir.provider.test.ValueSetProvider;
 
 @Component
 public class FhirRestfulServlet extends RestfulServer {
@@ -49,6 +52,9 @@ public class FhirRestfulServlet extends RestfulServer {
     @Autowired private RelatedPersonProvider relatedPersonProvider;
     @Autowired private ServiceRequestProvider serviceRequestProvider;
     @Autowired private SpecimenProvider specimenProvider;
+    @Autowired private CodeSystemProvider codeSystemProvider;
+    @Autowired private ValueSetProvider valueSetProvider;
+    @Autowired private StructureDefinitionProvider structureDefinitionProvider;
     
     
     @Override
@@ -69,8 +75,10 @@ public class FhirRestfulServlet extends RestfulServer {
             procedureProvider,
             relatedPersonProvider,
             serviceRequestProvider,
-            specimenProvider
-            
+            specimenProvider,
+            codeSystemProvider,
+            valueSetProvider,
+            structureDefinitionProvider            
         ));
         
         var config = new CorsConfiguration();

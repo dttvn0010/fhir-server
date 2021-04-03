@@ -21,17 +21,20 @@ import ca.uhn.fhir.rest.annotation.OptionalParam;
 import ca.uhn.fhir.rest.annotation.Read;
 import ca.uhn.fhir.rest.annotation.ResourceParam;
 import ca.uhn.fhir.rest.annotation.Search;
+import ca.uhn.fhir.rest.annotation.Validate;
 import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.api.ValidationModeEnum;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import vn.moh.fhir.model.entity.DiagnosticReportEntity;
 import vn.moh.fhir.service.DiagnosticReportService;
 import vn.moh.fhir.utils.DataUtils;
-import vn.moh.fhir.utils.FhirUtils;
+import vn.moh.fhir.utils.FhirHelper;
 
 @Component
 public class DiagnosticReportProvider  implements IResourceProvider {
-
+    
+    @Autowired private FhirHelper fhirUtils;    
     @Autowired private DiagnosticReportService diagnosticReportService;
     
     @Override
@@ -43,13 +46,34 @@ public class DiagnosticReportProvider  implements IResourceProvider {
     public Resource read(@IdParam IdType idType) {
         var diagnosticReportEntity = diagnosticReportService.getByUuid(idType.getIdPart());
         if(diagnosticReportEntity == null) {
-            FhirUtils.createOperationOutcome("No DiagnosticReport with \"" + idType.getIdPart() + "\" found");
+            fhirUtils.createOperationOutcome("No DiagnosticReport with \"" + idType.getIdPart() + "\" found");
         }
         return diagnosticReportEntity.toFhir();
     }    
     
+    @Validate
+    public MethodOutcome validate(@ResourceParam DiagnosticReport diagnosticReport, 
+            @Validate.Mode ValidationModeEnum mode,
+            @Validate.Profile String profile) {
+        
+        var result = fhirUtils.validateResource(diagnosticReport, profile);
+        var outcome = new MethodOutcome();
+        outcome.setOperationOutcome(result.toOperationOutcome());
+        return outcome;       
+    }
+    
     @Create
     public MethodOutcome create(@ResourceParam DiagnosticReport diagnosticReport) {
+        // validate resource
+        var validateResult = fhirUtils.validateResource(diagnosticReport, null);
+        
+        if(!validateResult.isSuccessful()) {
+            var outcome = new MethodOutcome();           
+            outcome.setResource(validateResult.toOperationOutcome());
+            return outcome;
+        }
+        
+        // Save resource        
         var id = UUID.randomUUID().toString();
         diagnosticReport.setId(id);      
         var diagnosticReportEntity = DiagnosticReportEntity.fromFhir(diagnosticReport);
@@ -61,7 +85,7 @@ public class DiagnosticReportProvider  implements IResourceProvider {
         
         var outcome = new MethodOutcome();
         outcome.setCreated(true);
-        outcome.setOperationOutcome(FhirUtils.createOperationOutcome(                
+        outcome.setOperationOutcome(fhirUtils.createOperationOutcome(                
                 "urn:uuid:" + diagnosticReport.getId(),
                 "Create succsess",
                 IssueSeverity.INFORMATION, 

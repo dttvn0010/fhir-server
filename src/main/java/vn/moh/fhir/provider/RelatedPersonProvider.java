@@ -20,10 +20,12 @@ import ca.uhn.fhir.rest.server.IResourceProvider;
 import vn.moh.fhir.model.entity.RelatedPersonEntity;
 import vn.moh.fhir.service.RelatedPersonService;
 import vn.moh.fhir.utils.DataUtils;
-import vn.moh.fhir.utils.FhirUtils;
+import vn.moh.fhir.utils.FhirHelper;
 
 @Component
 public class RelatedPersonProvider implements IResourceProvider {
+    
+    @Autowired private FhirHelper fhirUtils;
     @Autowired private RelatedPersonService relatedPersonService;
 
     @Override
@@ -35,7 +37,7 @@ public class RelatedPersonProvider implements IResourceProvider {
     public Resource read(@IdParam IdType idType) {
         var relatedPersonEntity = relatedPersonService.getByUuid(idType.getIdPart());
         if(relatedPersonEntity == null) {
-            FhirUtils.createOperationOutcome("No RelatedPerson with \"" + idType.getIdPart() + "\" found");
+            fhirUtils.createOperationOutcome("No RelatedPerson with \"" + idType.getIdPart() + "\" found");
         }
         return relatedPersonEntity.toFhir();
     }    

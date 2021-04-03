@@ -21,17 +21,20 @@ import ca.uhn.fhir.rest.annotation.OptionalParam;
 import ca.uhn.fhir.rest.annotation.Read;
 import ca.uhn.fhir.rest.annotation.ResourceParam;
 import ca.uhn.fhir.rest.annotation.Search;
+import ca.uhn.fhir.rest.annotation.Validate;
 import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.api.ValidationModeEnum;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import vn.moh.fhir.model.entity.ServiceRequestEntity;
 import vn.moh.fhir.service.ServiceRequestService;
 import vn.moh.fhir.utils.DataUtils;
-import vn.moh.fhir.utils.FhirUtils;
+import vn.moh.fhir.utils.FhirHelper;
 
 @Component
 public class ServiceRequestProvider implements IResourceProvider {
 
+    @Autowired private FhirHelper fhirUtils;
     @Autowired private ServiceRequestService serviceRequestService;
     
     @Override
@@ -43,13 +46,35 @@ public class ServiceRequestProvider implements IResourceProvider {
     public Resource read(@IdParam IdType idType) {
         var serviceRequestEntity = serviceRequestService.getByUuid(idType.getIdPart());
         if(serviceRequestEntity == null) {
-            FhirUtils.createOperationOutcome("No ServiceRequest with \"" + idType.getIdPart() + "\" found");
+            fhirUtils.createOperationOutcome("No ServiceRequest with \"" + idType.getIdPart() + "\" found");
         }
         return serviceRequestEntity.toFhir();
     }    
     
+    @Validate
+    public MethodOutcome validate(@ResourceParam ServiceRequest serviceRequest, 
+            @Validate.Mode ValidationModeEnum mode,
+            @Validate.Profile String profile) {
+        
+        var result = fhirUtils.validateResource(serviceRequest, profile);
+        var outcome = new MethodOutcome();
+        outcome.setOperationOutcome(result.toOperationOutcome());
+        return outcome;       
+    }
+        
     @Create
     public MethodOutcome create(@ResourceParam ServiceRequest serviceRequest) {
+        // validate resource
+        var validateResult = fhirUtils.validateResource(serviceRequest, null);
+        
+        if(!validateResult.isSuccessful()) {
+            var outcome = new MethodOutcome();           
+            outcome.setResource(validateResult.toOperationOutcome());
+            return outcome;
+        }
+        
+        // Save resource
+        
         var id = UUID.randomUUID().toString();
         serviceRequest.setId(id);      
         var serviceRequestEntity = ServiceRequestEntity.fromFhir(serviceRequest);
@@ -61,7 +86,7 @@ public class ServiceRequestProvider implements IResourceProvider {
         
         var outcome = new MethodOutcome();
         outcome.setCreated(true);
-        outcome.setOperationOutcome(FhirUtils.createOperationOutcome(                
+        outcome.setOperationOutcome(fhirUtils.createOperationOutcome(                
                 "urn:uuid:" + serviceRequest.getId(),
                 "Create succsess",
                 IssueSeverity.INFORMATION, 

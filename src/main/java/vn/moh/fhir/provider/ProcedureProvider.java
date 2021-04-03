@@ -21,17 +21,20 @@ import ca.uhn.fhir.rest.annotation.OptionalParam;
 import ca.uhn.fhir.rest.annotation.Read;
 import ca.uhn.fhir.rest.annotation.ResourceParam;
 import ca.uhn.fhir.rest.annotation.Search;
+import ca.uhn.fhir.rest.annotation.Validate;
 import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.api.ValidationModeEnum;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import vn.moh.fhir.model.entity.ProcedureEntity;
 import vn.moh.fhir.service.ProcedureService;
 import vn.moh.fhir.utils.DataUtils;
-import vn.moh.fhir.utils.FhirUtils;
+import vn.moh.fhir.utils.FhirHelper;
 
 @Component
 public class ProcedureProvider implements IResourceProvider {
 
+    @Autowired private FhirHelper fhirUtils;
     @Autowired private ProcedureService procedureService;
     
     @Override
@@ -43,13 +46,34 @@ public class ProcedureProvider implements IResourceProvider {
     public Resource read(@IdParam IdType idType) {
         var procedureEntity = procedureService.getByUuid(idType.getIdPart());
         if(procedureEntity == null) {
-            FhirUtils.createOperationOutcome("No Procedure with \"" + idType.getIdPart() + "\" found");
+            fhirUtils.createOperationOutcome("No Procedure with \"" + idType.getIdPart() + "\" found");
         }
         return procedureEntity.toFhir();
     }    
     
+    @Validate
+    public MethodOutcome validate(@ResourceParam Procedure procedure, 
+            @Validate.Mode ValidationModeEnum mode,
+            @Validate.Profile String profile) {
+        
+        var result = fhirUtils.validateResource(procedure, profile);
+        var outcome = new MethodOutcome();
+        outcome.setOperationOutcome(result.toOperationOutcome());
+        return outcome;       
+    }
+    
     @Create
     public MethodOutcome create(@ResourceParam Procedure procedure) {
+        // validate resource
+        var validateResult = fhirUtils.validateResource(procedure, null);
+        
+        if(!validateResult.isSuccessful()) {
+            var outcome = new MethodOutcome();           
+            outcome.setResource(validateResult.toOperationOutcome());
+            return outcome;
+        }
+        
+        // Save resource
         var id = UUID.randomUUID().toString();
         procedure.setId(id);      
         var procedureEntity = ProcedureEntity.fromFhir(procedure);
@@ -61,7 +85,7 @@ public class ProcedureProvider implements IResourceProvider {
         
         var outcome = new MethodOutcome();
         outcome.setCreated(true);
-        outcome.setOperationOutcome(FhirUtils.createOperationOutcome(                
+        outcome.setOperationOutcome(fhirUtils.createOperationOutcome(                
                 "urn:uuid:" + procedure.getId(),
                 "Create succsess",
                 IssueSeverity.INFORMATION, 

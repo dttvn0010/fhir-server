@@ -1,0 +1,17 @@
+{
+  "resourceType": "ValueSet",
+  "id": "ethnic-groups",
+  "url": "https://fhir.moh.gov.vn/ValueSet/ethnic-groups",
+  "version": "1.0.0",
+  "name": "DM_DANTOC",
+  "title": "Danh mục dân tộc",
+  "status": "active",
+  "publisher": "Ministry of Health (Vietnam)",
+  "compose": {
+    "include": [
+      {
+        "system": "https://fhir.moh.gov.vn/CodeSystem/ethnic-groups"
+      }
+    ]
+  }
+}

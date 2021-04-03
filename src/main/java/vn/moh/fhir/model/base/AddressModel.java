@@ -5,7 +5,7 @@ import org.hl7.fhir.r4.model.Address;
 import org.hl7.fhir.r4.model.Address.AddressUse;
 import org.hl7.fhir.r4.model.CodeableConcept;
 
-import vn.moh.fhir.utils.FhirUtils;
+import vn.moh.fhir.utils.FhirHelperFactory;
 import vn.moh.fhir.utils.Constants.ExtensionURL;
 
 public class AddressModel {
@@ -25,6 +25,8 @@ public class AddressModel {
     PeriodModel period;
     
     public Address toFhir() {
+        var fhirHelper = FhirHelperFactory.getFhirHelper();
+        
         var address = new Address();
         if(!StringUtils.isEmpty(use)) {
             address.setUse(AddressUse.fromCode(use));
@@ -44,17 +46,17 @@ public class AddressModel {
         address.setCountry(country);
         
         if(ward != null) {
-            address.addExtension(FhirUtils.createExtension(ExtensionURL.ADDRESS_WARD, ward.toFhir()));
+            address.addExtension(fhirHelper.createExtension(ExtensionURL.ADDRESS_WARD, ward.toFhir()));
         }
         
         if(district != null) {
             address.setDistrict(district.getDisplay());
-            address.addExtension(FhirUtils.createExtension(ExtensionURL.ADDRESS_DISTRICT, district.toFhir()));
+            address.addExtension(fhirHelper.createExtension(ExtensionURL.ADDRESS_DISTRICT, district.toFhir()));
         }
         
         if(city != null) {
             address.setCity(city.getDisplay());
-            address.addExtension(FhirUtils.createExtension(ExtensionURL.ADDRESS_CITY, city.toFhir()));
+            address.addExtension(fhirHelper.createExtension(ExtensionURL.ADDRESS_CITY, city.toFhir()));
         }
         
         return address;
@@ -65,6 +67,8 @@ public class AddressModel {
     }
     
     public AddressModel(Address address) {
+        var fhirHelper = FhirHelperFactory.getFhirHelper();
+        
         if(address.hasUse()) {
             this.use = address.getUse().toCode();
         }
@@ -85,12 +89,12 @@ public class AddressModel {
         this.postalCode = address.getPostalCode();
         this.country = address.getCountry();
         
-        var wardExt = FhirUtils.findExtension(address.getExtension(), ExtensionURL.ADDRESS_WARD);
+        var wardExt = fhirHelper.findExtension(address.getExtension(), ExtensionURL.ADDRESS_WARD);
         if(wardExt != null && wardExt.getValue() instanceof CodeableConcept) {
             this.ward = CodeableConceptModel.fromFhir((CodeableConcept) wardExt.getValue());
         }
         
-        var districtExt = FhirUtils.findExtension(address.getExtension(), ExtensionURL.ADDRESS_DISTRICT);
+        var districtExt = fhirHelper.findExtension(address.getExtension(), ExtensionURL.ADDRESS_DISTRICT);
         if(districtExt != null && districtExt.getValue() instanceof CodeableConcept) {
             this.district = CodeableConceptModel.fromFhir((CodeableConcept) districtExt.getValue());
             
@@ -98,7 +102,7 @@ public class AddressModel {
             this.district = new CodeableConceptModel(address.getDistrict());
         }
         
-        var cityExt = FhirUtils.findExtension(address.getExtension(), ExtensionURL.ADDRESS_CITY);
+        var cityExt = fhirHelper.findExtension(address.getExtension(), ExtensionURL.ADDRESS_CITY);
         if(cityExt != null && cityExt.getValue() instanceof CodeableConcept) {
             this.city = CodeableConceptModel.fromFhir((CodeableConcept) cityExt.getValue());
             
