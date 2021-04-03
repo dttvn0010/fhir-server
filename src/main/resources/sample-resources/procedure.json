@@ -9,7 +9,7 @@
   "category": {
     "coding": [
       {
-        "system": "http://fhir.moh.vn/CodeSystem/Procedure-Category",
+        "system": "http://fhir.moh.gov.vn/CodeSystem/Procedure-Category",
         "code": "03",
         "display": "Chẩn đoán hình ảnh"
       }
@@ -19,7 +19,7 @@
   "code": {
     "coding": [
       {
-        "system": "http://fhir.moh.vn/CodeSystem/Procedure",
+        "system": "http://fhir.moh.gov.vn/CodeSystem/Procedure",
         "code": "01",
         "display": "Nội soi ổ bụng"
       }

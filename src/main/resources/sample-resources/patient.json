@@ -20,39 +20,39 @@
   "birthDate": "1952-01-01",
   "extension": [
     {
-      "url": "http://fhir.moh.vn/StructureDefinition/Patient-Job",
+      "url": "http://fhir.moh.gov.vn/StructureDefinition/Patient-Job",
       "valueCodeableConcept": {
         "text": "Nghề khác",
         "coding": [
           {
             "code": "28",
-            "system": "http://fhir.moh.vn/CodeSystem/Job",
+            "system": "http://fhir.moh.gov.vn/CodeSystem/Job",
             "display": "Nghề khác"
           }
         ]
       }
     },
     {
-      "url": "http://fhir.moh.vn/StructureDefinition/Patient-Ethnic",
+      "url": "http://fhir.moh.gov.vn/StructureDefinition/Patient-Ethnic",
       "valueCodeableConcept": {
         "text": "Kinh",
         "coding": [
           {
             "code": "01",
-            "system": "http://fhir.moh.vn/CodeSystem/Ethnic",
+            "system": "http://fhir.moh.gov.vn/CodeSystem/Ethnic",
             "display": "Kinh"
           }
         ]
       }
     },
     {
-      "url": "http://fhir.moh.vn/StructureDefinition/Patient-Nationality",
+      "url": "http://fhir.moh.gov.vn/StructureDefinition/Patient-Nationality",
       "valueCodeableConcept": {
         "text": "Việt Nam",
         "coding": [
           {
             "code": "VNM",
-            "system": "http://fhir.moh.vn/CodeSystem/Nationality",
+            "system": "http://fhir.moh.gov.vn/CodeSystem/Nationality",
             "display": "Việt Nam"
           }
         ]

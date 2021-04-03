@@ -3,7 +3,7 @@
   "code": {
     "coding": [
       {
-        "system": "http://fhir.moh.vn/CodeSystem/Medication",
+        "system": "http://fhir.moh.gov.vn/CodeSystem/Medication",
         "code": "VD-8049-09",
         "display": "Panadol"
       }

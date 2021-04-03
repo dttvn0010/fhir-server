@@ -16,7 +16,7 @@
   "code": {
     "coding": [
       {
-        "system": "http://fhir.moh.vn/CodeSystem/Observation",
+        "system": "http://fhir.moh.gov.vn/CodeSystem/Observation",
         "code": "H21",
         "display": "Mono"
       }

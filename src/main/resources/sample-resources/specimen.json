@@ -3,7 +3,7 @@
   "type": {
     "coding": [
       {
-        "system": "http://fhir.moh.vn/CodeSystem/Specimen-Type",
+        "system": "http://fhir.moh.gov.vn/CodeSystem/Specimen-Type",
         "code": "01",
         "display": "Máu"
       }
@@ -25,7 +25,7 @@
     {
       "coding": [
         {
-          "system": "http://fhir.moh.vn/CodeSystem/Specimen-Condition",
+          "system": "http://fhir.moh.gov.vn/CodeSystem/Specimen-Condition",
           "code": "01",
           "display": "Bình thường"
         }
