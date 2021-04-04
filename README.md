@@ -74,7 +74,7 @@ Trong trường hợp không có terminology server, có thể sử dụng các 
   "url": "http://fhir.moh.gov.vn/CodeSystem/Ethnic-Group",
   ...
   ``` 
---> tên file danh mục cần đặt là `Ethnic-Group`
+--> tên file danh mục cần đặt là `Ethnic-Group.json`
 
 ### Validate theo profile tùy chọn
 Để validate theo profile tùy chọn, đặt tên profile vào trong phần meta của danh mục, ví dụ
