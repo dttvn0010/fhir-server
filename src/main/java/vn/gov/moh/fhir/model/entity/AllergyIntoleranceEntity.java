@@ -22,6 +22,7 @@ import vn.gov.moh.fhir.model.base.CodeableConceptModel;
 import vn.gov.moh.fhir.model.base.IdentifierModel;
 import vn.gov.moh.fhir.model.base.ReferenceModel;
 import vn.gov.moh.fhir.utils.DataUtils;
+import vn.gov.moh.fhir.utils.DateUtils;
 
 @JsonInclude(Include.NON_NULL)
 @Document(collection = "allergy_intolerance")
@@ -189,6 +190,15 @@ public class AllergyIntoleranceEntity {
             
             if(allergyIntolerance.hasOnsetStringType()) {
                 this.onset = allergyIntolerance.getOnset().primitiveValue();
+                
+            }else if(allergyIntolerance.hasOnsetDateTimeType()) {
+                this.onset = DateUtils.parseDateToString(allergyIntolerance.getOnsetDateTimeType().getValue(), "yyyy-MM-dd");
+                
+            }else if(allergyIntolerance.hasOnsetPeriod()) {
+                var period = allergyIntolerance.getOnsetPeriod();
+                String start = DateUtils.parseDateToString(period.getStart(), "yyyy-MM-dd");
+                String end = DateUtils.parseDateToString(period.getEnd(), "yyyy-MM-dd");
+                this.onset = start + " -> " + end;
             }
             
             this.recordedDate = allergyIntolerance.getRecordedDate();

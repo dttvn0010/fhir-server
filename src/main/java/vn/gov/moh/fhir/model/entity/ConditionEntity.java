@@ -20,6 +20,7 @@ import vn.gov.moh.fhir.model.base.CodeableConceptModel;
 import vn.gov.moh.fhir.model.base.IdentifierModel;
 import vn.gov.moh.fhir.model.base.ReferenceModel;
 import vn.gov.moh.fhir.utils.DataUtils;
+import vn.gov.moh.fhir.utils.DateUtils;
 
 @JsonInclude(Include.NON_NULL)
 @Document(collection = "condition")
@@ -224,6 +225,15 @@ public class ConditionEntity {
             
             if(condition.hasOnsetStringType()) {
                 this.onset = condition.getOnset().primitiveValue();
+                
+            }else if(condition.hasOnsetDateTimeType()) {
+                this.onset = DateUtils.parseDateToString(condition.getOnsetDateTimeType().getValue(), "yyyy-MM-dd");
+                
+            }else if(condition.hasOnsetPeriod()) {
+                var period = condition.getOnsetPeriod();
+                String start = DateUtils.parseDateToString(period.getStart(), "yyyy-MM-dd");
+                String end = DateUtils.parseDateToString(period.getEnd(), "yyyy-MM-dd");
+                this.onset = start + " -> " + end;
             }
             
             this.recordedDate = condition.getRecordedDate();
