@@ -77,7 +77,7 @@ Trong trường hợp không có terminology server, có thể sử dụng các 
 --> tên file danh mục cần đặt là `Ethnic-Group.json`
 
 ### Validate theo profile tùy chọn
-Để validate theo profile tùy chọn, đặt tên profile vào trong phần meta của danh mục, ví dụ
+Để validate theo profile tùy chọn, đặt tên profile vào trong phần meta của resource, ví dụ
 ```
 {  
   "resourceType": "Patient",
