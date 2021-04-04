@@ -105,8 +105,9 @@ curl -H "Content-Type:application/json" -X POST -d "@src/main/resources/sample-r
 ```
 curl -H "Content-Type:application/json" -X PUT -d "@src/main/resources/sample-resources/patient.json" http://127.0.0.1:8080/R4/Patient/229189c0-ad05-4b42-909a-5743e9bc5831
 ```
- Lưu ý: khi chỉnh sửa resource, trong body của json message phải chứa trường id , và giá trị này cần trùng với <resourceId> trên API URL.  
- Khi update resource thì giá trị cũ không bị xóa mà chuyển sang trạng thái inactive (trường _active bằng false), và vẫn có thể đọc ra bằng hàm đọc lịch sử resource ở phần dưới)
+Lưu ý: khi chỉnh sửa resource, trong body của json message phải chứa trường id , và giá trị này cần trùng với <resourceId> trên API URL.   
+
+Khi chỉnh sửa resource thì giá trị cũ không bị xóa mà chuyển sang trạng thái inactive (trường _active bằng false), và vẫn có thể đọc ra bằng hàm đọc lịch sử resource ở phần dưới)
  
  ### Xóa resource
 - API URL : `<BASE_URL>/R4/<ResourceType>/<resourceId>`
