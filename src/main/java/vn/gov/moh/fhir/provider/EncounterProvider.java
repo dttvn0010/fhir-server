@@ -53,7 +53,7 @@ public class EncounterProvider  implements IResourceProvider  {
         return encounterEntity.toFhir();
     }    
     
-    @Read
+    @Read(version = true)
     public Resource readVersion(@IdParam IdType idType) {
         EncounterEntity encounterEntity = null;
         Integer version = null;

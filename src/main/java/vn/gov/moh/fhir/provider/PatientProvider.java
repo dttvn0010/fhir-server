@@ -52,7 +52,7 @@ public class PatientProvider implements IResourceProvider{
         return patientEntity.toFhir();
     }    
     
-    @Read
+    @Read(version = true)
     public Resource readVersion(@IdParam IdType idType) {
         PatientEntity patientEntity = null;
         Integer version = null;

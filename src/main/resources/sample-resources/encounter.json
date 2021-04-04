@@ -10,6 +10,7 @@
   },
   "status": "finished",
   "subject": {
+    "reference": "Patient/229189c0-ad05-4b42-909a-5743e9bc5831",
     "identifier": {
       "type": {
         "text": "Số thẻ bảo hiểm xã hội",
