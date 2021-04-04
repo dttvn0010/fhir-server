@@ -5,8 +5,8 @@
     "display": "Bệnh ngoại trú"
   },
   "period": {
-    "end": "2021-01-25T08:15:41",
-    "start": "2021-01-25T08:12:17"
+    "end": "2021-01-25T08:15:41+07:00",
+    "start": "2021-01-25T08:12:17+07:00"
   },
   "status": "finished",
   "subject": {
@@ -17,7 +17,7 @@
           {
             "code": "MC",
             "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
-            "display": "Medicare number"
+            "display": "Patient's Medicare number"
           }
         ]
       },
@@ -27,8 +27,8 @@
   "location": [
     {
       "period": {
-        "end": "2021-01-25T08:15:41",
-        "start": "2021-01-25T08:12:18"
+        "end": "2021-01-25T08:15:41+07:00",
+        "start": "2021-01-25T08:12:18+07:00"
       },
       "location": {
         "display": "Khoa Khám bệnh"

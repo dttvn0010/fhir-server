@@ -1,8 +1,10 @@
 package vn.gov.moh.fhir.utils;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
 
@@ -22,7 +24,9 @@ import org.hl7.fhir.r4.model.OperationOutcome.IssueType;
 import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.StringType;
 import org.hl7.fhir.r4.model.ValueSet;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -40,6 +44,15 @@ public class FhirHelper {
     
     @Value("${fhir.terminology.server.url}")
     private String terminologyServerUrl;
+    
+    @Autowired private FhirContext fhirContext;
+    
+    private Map<String, IBaseResource> resourcesCache = new HashMap<>();
+    
+    @Bean
+    public FhirContext getFhirContext() {
+        return FhirContext.forR4();
+    }
     
     public Extension createExtension(String url, CodeableConcept concept) {
         if(concept == null) return null;
@@ -118,16 +131,29 @@ public class FhirHelper {
     }
     
     public IBaseResource fetchRemoteResource(String url) {
-        var jsonParser = FhirContext.forR4().newJsonParser();
+        
+        if(!url.startsWith(fhirDomain)) {
+            return null;
+        }
+        
+        if(resourcesCache.containsKey(url)) {
+            return resourcesCache.get(url);
+        }
+        
+        var jsonParser = fhirContext.newJsonParser();
         
         var restTemplate = new RestTemplate();
+        
         var response = restTemplate.getForEntity(url.replace(fhirDomain, terminologyServerUrl), String.class);  
         
-        return jsonParser.parseResource(response.getBody());
+        var resource = jsonParser.parseResource(response.getBody());
+        resourcesCache.put(url, resource);
+        
+        return resource;
     }
     
     public HashSet<String> getSupportCodeSystemUrls() {
-        var jsonParser = FhirContext.forR4().newJsonParser();
+        var jsonParser = fhirContext.newJsonParser();
         
         var restTemplate = new RestTemplate();
         var response = restTemplate.getForEntity(terminologyServerUrl + "/CodeSystem", String.class);
@@ -136,14 +162,15 @@ public class FhirHelper {
         var codeSystemUrls = new HashSet<String>();
         
         for(var entry : bundle.getEntry()) {
-            codeSystemUrls.add(fhirDomain + "/CodeSystem/" +  entry.getResource().getId());
+            var codeSystemId = entry.getResource().getId().replace(terminologyServerUrl + "/CodeSystem/", "");
+            codeSystemUrls.add(fhirDomain + "/CodeSystem/" + codeSystemId);
         }
         
         return codeSystemUrls;        
     }
     
     public HashSet<String> getSupportValueSetUrls() {
-        var jsonParser = FhirContext.forR4().newJsonParser();
+        var jsonParser = fhirContext.newJsonParser();
         
         var restTemplate = new RestTemplate();
         var response = restTemplate.getForEntity(terminologyServerUrl + "/ValueSet", String.class);
@@ -152,14 +179,15 @@ public class FhirHelper {
         var valueSetUrls = new HashSet<String>();
         
         for(var entry : bundle.getEntry()) {
-            valueSetUrls.add(fhirDomain + "/ValueSet/" +  entry.getResource().getId());
+            var valueSetId = entry.getResource().getId().replace(terminologyServerUrl + "/ValueSet/", "");
+            valueSetUrls.add(fhirDomain + "/ValueSet/" +  valueSetId);
         }
         
         return valueSetUrls;        
     }
     
     public ValidationResult validateResource(Resource resource, String profile) {
-        var ctx = FhirContext.forR4();
+        var ctx = fhirContext;
         var customValidationSupport = new IValidationSupport() {
             @Override
             public FhirContext getFhirContext() {
@@ -272,7 +300,7 @@ public class FhirHelper {
 
         if (resource.getMeta() != null && resource.getMeta().getProfile() != null) {
             for (var item : resource.getMeta().getProfile()) {
-                options.addProfile(item.toString());
+                options.addProfile(item.getValue());
             }
         }
         

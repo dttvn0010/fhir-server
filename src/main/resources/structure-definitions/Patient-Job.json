@@ -1,15 +1,15 @@
 {
   "resourceType": "StructureDefinition",
-  "id": "vietnamese-ethnic-group",
-  "url": "https://fhir.moh.gov.vn/StructureDefinition/vietnamese-ethnic-group",
+  "id": "Patient-Job",
+  "url": "http://fhir.moh.gov.vn/StructureDefinition/Patient-Job",
   "version": "1.0.2",
-  "name": "VietnameseEthnicGroup",
-  "title": "Vietnamese Ethnic group",
+  "name": "PatientJob",
+  "title": "Patient Job",
   "status": "draft",
   "date": "2020-11-02T00:00:00+07:00",
   "publisher": "Ministry of Health (Vietnam)",
-  "description": "This extension applies to the Patient resource and provides a coding for Ethnic group of the patient.",
-  "purpose": "Recording ethnic group for a Vietnamese patient.",
+  "description": "This extension applies to the Patient resource and provides a coding for Job of the patient.",
+  "purpose": "Recording job for a Vietnamese patient.",
   "fhirVersion": "4.0.1",
   "kind": "complex-type",
   "abstract": false,
@@ -24,8 +24,8 @@
     "element": [ {
       "id": "Extension",
       "path": "Extension",
-      "short": "Ethnic group",
-      "definition": "Ethnic group for a patient.",
+      "short": "Job",
+      "definition": "Job for a patient.",
       "min": 0,
       "max": "1",
       "base": {
@@ -115,17 +115,17 @@
       "type": [ {
         "code": "uri"
       } ],
-      "fixedUri": "https://fhir.moh.gov.vn/StructureDefinition/vietnamese-ethnic-group",
+      "fixedUri": "http://fhir.moh.gov.vn/StructureDefinition/Patient-Job",
       "mapping": [ {
         "identity": "rim",
         "map": "N/A"
       } ]
     }, {
-      "id": "Extension.valueCoding:valueCoding",
-      "path": "Extension.valueCoding",
-      "sliceName": "valueCoding",
-      "short": "Vietnamese Ethnic group Code",
-      "definition": "Vietnamese Ethnic group code.",
+      "id": "Extension.valueCodeableConcept:valueCodeableConcept",
+      "path": "Extension.valueCodeableConcept",
+      "sliceName": "valueCodeableConcept",
+      "short": "Patient Job Code",
+      "definition": "Patient Job code.",
       "min": 1,
       "max": "1",
       "base": {
@@ -134,12 +134,12 @@
         "max": "1"
       },
       "type": [ {
-        "code": "Coding"
+        "code": "CodeableConcept"
       } ],
       "binding": {
         "strength": "required",
-        "description": "Vietnamese Ethnic group",
-        "valueSet": "https://fhir.moh.gov.vn/ValueSet/vietnamese-ethnic-groups"
+        "description": "Patient Job",
+        "valueSet": "http://fhir.moh.gov.vn/ValueSet/Job"
       }
     } ]
   }

@@ -8,6 +8,7 @@ import org.hl7.fhir.r4.model.CodeSystem;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.StringType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.helger.commons.io.resource.ClassPathResource;
@@ -22,8 +23,12 @@ import ca.uhn.fhir.rest.server.IResourceProvider;
 @Component
 public class CodeSystemProvider implements IResourceProvider {
     
+    @Autowired private FhirContext fhirContext;
+    
     final static String[] CODE_SYSTEM_IDS = {
-           "ethnic-groups"
+           "Ethnic-Group",
+           "Job",
+           "Nationality"
     };
     
     @Override
@@ -37,7 +42,7 @@ public class CodeSystemProvider implements IResourceProvider {
         var lst = new ArrayList<CodeSystem>();
         
         for(String codeSystemId : CODE_SYSTEM_IDS) {
-            var jsonParser = FhirContext.forR4().newJsonParser();        
+            var jsonParser = fhirContext.newJsonParser();        
             var str = (new ClassPathResource("code-systems/" + codeSystemId + ".json")).getInputStream();              
             var codeSystem = (CodeSystem) jsonParser.parseResource(str);
             String keyword = name != null? name.getValue() : "";
@@ -52,8 +57,11 @@ public class CodeSystemProvider implements IResourceProvider {
 
     @Read
     public Resource read(@IdParam IdType idType) {
-        var jsonParser = FhirContext.forR4().newJsonParser();        
-        var str = (new ClassPathResource("code-systems/" + idType.getIdPart() + ".json")).getInputStream();              
+        var jsonParser = fhirContext.newJsonParser();
+        var str = (new ClassPathResource("code-systems/" + idType.getIdPart() + ".json")).getInputStream(); 
+        if(str == null) {
+            return null;
+        }
         return (CodeSystem) jsonParser.parseResource(str);
     }
 }

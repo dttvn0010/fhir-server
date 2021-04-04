@@ -1,0 +1,24 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "Ethnic-Group",
+  "url": "http://fhir.moh.gov.vn/CodeSystem/Ethnic-Group",
+  "version": "1.0.0",
+  "name": "DM_DANTOC",
+  "title": "Danh mục dân tộc",
+  "status": "active",
+  "publisher": "Ministry of Health (Vietnam)",
+  "concept": [
+    {
+      "code": "01",
+      "display": "Kinh"
+    },
+    {
+      "code": "02",
+      "display": "Tày"
+    },
+    {
+      "code": "99",
+      "display": "Không rõ"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "resourceType": "ValueSet",
+  "id": "Nationality",
+  "url": "http://fhir.moh.gov.vn/ValueSet/Nationality",
+  "version": "1.0.0",
+  "name": "DM_QUOC_TICH",
+  "title": "Danh mục quốc tịch",
+  "status": "active",
+  "publisher": "Ministry of Health (Vietnam)",
+  "compose": {
+    "include": [
+      {
+        "system": "http://fhir.moh.gov.vn/CodeSystem/Nationality"
+      }
+    ]
+  }
+}

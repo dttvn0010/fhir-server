@@ -10,6 +10,10 @@ public class Constants {
     }
     
     public static interface CodeSystemURL {
+        final public static String JOB = "http://fhir.moh.gov.vn/CodeSystem/Job";
+        final public static String ETHNIC = "http://fhir.moh.gov.vn/CodeSystem/Ethnic-Group";
+        final public static String NATIONALITY = "http://fhir.moh.gov.vn/CodeSystem/Nationality";
+        
         final public static String MEDICATION = "http://fhir.moh.gov.vn/CodeSystem/Medication";
         final public static String PROCEDURE_CATEGORY = "http://fhir.moh.gov.vn/CodeSystem/Procedure-Category";
         final public static String PROCEDURE = "http://fhir.moh.gov.vn/CodeSystem/Procedure";
@@ -20,7 +24,7 @@ public class Constants {
    
     public static interface ExtensionURL {
         // Patient        
-        final public static String PATIENT_ETHNIC = "http://fhir.moh.gov.vn/StructureDefinition/Patient-Ethnic";
+        final public static String PATIENT_ETHNIC = "http://fhir.moh.gov.vn/StructureDefinition/Patient-Ethnic-Group";
         final public static String PATIENT_RELIGION = "http://fhir.moh.gov.vn/StructureDefinition/Patient-Religion";
         final public static String PATIENT_EDUCATION = "http://fhir.moh.gov.vn/StructureDefinition/Patient-Education";
         final public static String PATIENT_JOB = "http://fhir.moh.gov.vn/StructureDefinition/Patient-Job";

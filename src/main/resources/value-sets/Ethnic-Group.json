@@ -1,7 +1,7 @@
 {
   "resourceType": "ValueSet",
-  "id": "ethnic-groups",
-  "url": "https://fhir.moh.gov.vn/ValueSet/ethnic-groups",
+  "id": "Ethnic-Group",
+  "url": "http://fhir.moh.gov.vn/ValueSet/Ethnic-Group",
   "version": "1.0.0",
   "name": "DM_DANTOC",
   "title": "Danh mục dân tộc",
@@ -10,7 +10,7 @@
   "compose": {
     "include": [
       {
-        "system": "https://fhir.moh.gov.vn/CodeSystem/ethnic-groups"
+        "system": "http://fhir.moh.gov.vn/CodeSystem/Ethnic-Group"
       }
     ]
   }

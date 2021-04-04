@@ -8,6 +8,7 @@ import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.StringType;
 import org.hl7.fhir.r4.model.ValueSet;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.helger.commons.io.resource.ClassPathResource;
@@ -21,8 +22,13 @@ import ca.uhn.fhir.rest.server.IResourceProvider;
 
 @Component
 public class ValueSetProvider implements IResourceProvider {
+    
+    @Autowired FhirContext fhirContext;
+    
     final static String[] VALUE_SET_IDS = {
-          "ethnic-groups"
+            "Ethnic-Group",
+            "Job",
+            "Nationality"
     };
 
     @Override
@@ -36,7 +42,7 @@ public class ValueSetProvider implements IResourceProvider {
         var lst = new ArrayList<ValueSet>();
         
         for(String valueSetId : VALUE_SET_IDS) {
-            var jsonParser = FhirContext.forR4().newJsonParser();        
+            var jsonParser = fhirContext.newJsonParser();        
             var str = (new ClassPathResource("value-sets/" + valueSetId + ".json")).getInputStream();              
             var valueSet = (ValueSet) jsonParser.parseResource(str);
             String keyword = name != null? name.getValue() : "";
@@ -51,7 +57,7 @@ public class ValueSetProvider implements IResourceProvider {
 
     @Read
     public Resource read(@IdParam IdType idType) {
-        var jsonParser = FhirContext.forR4().newJsonParser();        
+        var jsonParser = fhirContext.newJsonParser();        
         var str = (new ClassPathResource("value-sets/" + idType.getIdPart() + ".json")).getInputStream();              
         return (ValueSet) jsonParser.parseResource(str);
     }

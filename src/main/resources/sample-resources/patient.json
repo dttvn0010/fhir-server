@@ -1,4 +1,8 @@
 {  
+  "resourceType": "Patient",
+  "meta": {
+     "profile": [ "http://fhir.moh.gov.vn/StructureDefinition/Patient-vn" ]
+  },
   "name": [
     {
       "use": "official",
@@ -25,7 +29,7 @@
         "text": "Nghề khác",
         "coding": [
           {
-            "code": "28",
+            "code": "99",
             "system": "http://fhir.moh.gov.vn/CodeSystem/Job",
             "display": "Nghề khác"
           }
@@ -33,13 +37,13 @@
       }
     },
     {
-      "url": "http://fhir.moh.gov.vn/StructureDefinition/Patient-Ethnic",
+      "url": "http://fhir.moh.gov.vn/StructureDefinition/Patient-Ethnic-Group",
       "valueCodeableConcept": {
         "text": "Kinh",
         "coding": [
           {
             "code": "01",
-            "system": "http://fhir.moh.gov.vn/CodeSystem/Ethnic",
+            "system": "http://fhir.moh.gov.vn/CodeSystem/Ethnic-Group",
             "display": "Kinh"
           }
         ]
@@ -51,7 +55,7 @@
         "text": "Việt Nam",
         "coding": [
           {
-            "code": "VNM",
+            "code": "01",
             "system": "http://fhir.moh.gov.vn/CodeSystem/Nationality",
             "display": "Việt Nam"
           }
@@ -67,12 +71,11 @@
           {
             "code": "MC",
             "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
-            "display": "Medicare number"
+            "display": "Patient's Medicare number"
           }
         ]
       },
       "value": "TEL100101101"
     }
-  ],
-  "resourceType": "Patient"
+  ]  
 }

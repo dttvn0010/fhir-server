@@ -1,0 +1,20 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "Nationality",
+  "url": "http://fhir.moh.gov.vn/CodeSystem/Nationality",
+  "version": "1.0.0",
+  "name": "DM_QUOC_TICH",
+  "title": "Danh mục quốc tịch",
+  "status": "active",
+  "publisher": "Ministry of Health (Vietnam)",
+  "concept": [
+    {
+      "code": "01",
+      "display": "Việt Nam"
+    },
+    {
+      "code": "99",
+      "display": "Khác"
+    }
+  ]
+}

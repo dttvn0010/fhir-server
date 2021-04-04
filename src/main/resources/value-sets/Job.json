@@ -1,0 +1,17 @@
+{
+  "resourceType": "ValueSet",
+  "id": "Job",
+  "url": "http://fhir.moh.gov.vn/ValueSet/Job",
+  "version": "1.0.0",
+  "name": "DM_NGHE_NGHIEP",
+  "title": "Danh mục nghề nghiệp",
+  "status": "active",
+  "publisher": "Ministry of Health (Vietnam)",
+  "compose": {
+    "include": [
+      {
+        "system": "http://fhir.moh.gov.vn/CodeSystem/Job"
+      }
+    ]
+  }
+}

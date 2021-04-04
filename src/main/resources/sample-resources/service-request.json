@@ -30,7 +30,7 @@
   "encounter": {
     "reference": "Encounter/4ea4bf36-b1ba-45b5-be82-0a89286ab4ed"
   },
-  "authoredOn": "2020-05-10T11:30:00",
+  "authoredOn": "2020-05-10T11:30:00+07:00",
   "requester": {
     "identifier": {
       "type": {
