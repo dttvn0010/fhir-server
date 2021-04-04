@@ -43,17 +43,17 @@ mvn spring-boot:run
  - Xem nội dung một resource
  - Xem nội dung một resource theo phiên bản
  
-### Validate resouce  
+### Validate resource  
 - API URL : `<BASE_URL>/R4/<ResourceType>/$validate`
 - Method: POST
-- Body: nội dung của resouce
+- Body: nội dung của resource
 - Ví dụ:
 ```
 curl -H "Content-Type:application/json" -X POST -d "@src/main/resources/sample-resources/patient.json" 'http://127.0.0.1:8080/R4/Patient/$validate'
 ```
   
 ### Validate danh mục
-Để validate danh mục trong các resouce, cần kết nối với terminology server. Thông số của termninology được đặt trong file `src/main/resources/application.properties`  
+Để validate danh mục trong các resource, cần kết nối với terminology server. Thông số của termninology được đặt trong file `src/main/resources/application.properties`  
 ```
 fhir.terminology.server.url=<TERMINOLOGY_SERVER_URL>
 ```
@@ -91,7 +91,7 @@ Terminology server phải cung cấp API cho phép lấy về nội dung của S
 ### Thêm mới resource
 - API URL : `<BASE_URL>/R4/<ResourceType>`
 - Method: POST
-- Body: nội dung của resouce
+- Body: nội dung của resource
 - Ví dụ:
 ```
 curl -H "Content-Type:application/json" -X POST -d "@src/main/resources/sample-resources/patient.json" http://127.0.0.1:8080/R4/Patient
