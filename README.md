@@ -44,7 +44,7 @@ mvn spring-boot:run
  - Xem nội dung một resource theo phiên bản
  
 ### Validate resouce  
-- API URL : <BASE_URL>/R4/<ResourceType>/$validate
+- API URL : `<BASE_URL>/R4/<ResourceType>/$validate`
 - Method: POST
 - Body: nội dung của resouce
 - Ví dụ:
@@ -89,7 +89,7 @@ Trong trường hợp không có terminology server, có thể sử dụng các 
 Terminology server phải cung cấp API cho phép lấy về nội dung của StructureDefinition khai báo trong phần profile. Nếu chưa có terminology server và dùng tính năng test của fhir server thì cần đặt file json chứa nội dung của StructureDefinition vào thư mục `src/main/resources/structure-definitions` (tương tự như với CodeSystem và ValueSet)
 
 ### Thêm mới resource
-- API URL : <BASE_URL>/R4/<ResourceType>
+- API URL : `<BASE_URL>/R4/<ResourceType>`
 - Method: POST
 - Body: nội dung của resouce
 - Ví dụ:
@@ -98,9 +98,9 @@ curl -H "Content-Type:application/json" -X POST -d "@src/main/resources/sample-r
 ```
  
 ### Chỉnh sửa resource
-- API URL : <BASE_URL>/R4/<ResourceType>/<resourceId>
+- API URL : `<BASE_URL>/R4/<ResourceType>/<resourceId>`
 - Method: PUT
-- Body: nội dung của resouce
+- Body: nội dung của resource
 - Ví dụ:
 ```
 curl -H "Content-Type:application/json" -X PUT -d "@src/main/resources/sample-resources/patient.json" http://127.0.0.1:8080/R4/Patient/229189c0-ad05-4b42-909a-5743e9bc5831
@@ -109,7 +109,7 @@ curl -H "Content-Type:application/json" -X PUT -d "@src/main/resources/sample-re
  Khi update resource thì giá trị cũ không bị xóa mà chuyển sang trạng thái inactive (trường _active bằng false), và vẫn có thể đọc ra bằng hàm đọc lịch sử resource ở phần dưới)
  
  ### Xóa resource
-- API URL : <BASE_URL>/R4/<ResourceType>/<resourceId>
+- API URL : `<BASE_URL>/R4/<ResourceType>/<resourceId>`
 - Method: DELETE
 - Body: none
 - Ví dụ:
@@ -119,7 +119,7 @@ curl -H "Content-Type:application/json" -X DELETE http://127.0.0.1:8080/R4/Patie
  Tương tự như khi update, resource bị xóa chỉ chuyển sang trạng thái inactive và vẫn có thể xem bằng hàm xem lịch sử resource
  
  ### Tìm kiếm resource
-- API URL : <BASE_URL>/R4/<ResourceType>?<param1>=<value1>&<param2>=<value2>
+- API URL : `<BASE_URL>/R4/<ResourceType>?<param1>=<value1>&<param2>=<value2>`
 - Method: GET
 - Ví dụ:
 ```
@@ -129,7 +129,7 @@ curl -H "Content-Type:application/json" -X DELETE http://127.0.0.1:8080/R4/Patie
 ```
  
  ### Lấy nội dung một resource
-- API URL : <BASE_URL>/R4/<ResourceType>/<resourceId>
+- API URL : `<BASE_URL>/R4/<ResourceType>/<resourceId>`
 - Method: GET
 - Ví dụ:
 ```
@@ -137,7 +137,7 @@ curl http://127.0.0.1:8080/R4/Patient/229189c0-ad05-4b42-909a-5743e9bc5831
 ```
  
  ### Lấy nội dung một resource theo một phiên bản (xem lịch sử)
-- API URL : <BASE_URL>/R4/<ResourceType>/<resourceId>/_history/<version>
+- API URL : `<BASE_URL>/R4/<ResourceType>/<resourceId>/_history/<version>`
 - Method: GET
 - Ví dụ:
 ```
