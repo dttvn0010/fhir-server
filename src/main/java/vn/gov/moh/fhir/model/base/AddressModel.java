@@ -2,6 +2,7 @@ package vn.gov.moh.fhir.model.base;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.r4.model.Address;
+import org.hl7.fhir.r4.model.Address.AddressType;
 import org.hl7.fhir.r4.model.Address.AddressUse;
 
 import vn.gov.moh.fhir.utils.FhirHelperFactory;
@@ -32,7 +33,11 @@ public class AddressModel {
         if(!StringUtils.isEmpty(use)) {
             address.setUse(AddressUse.fromCode(use));
         }
-        address.setText(type);
+        
+        if(!StringUtils.isEmpty(type)) {
+            address.setType(AddressType.fromCode(type));
+        }
+        
         address.setText(text);
                 
         if(!StringUtils.isEmpty(line1)) {
